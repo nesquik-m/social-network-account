@@ -30,6 +30,8 @@ public class Account {
     private boolean isBlocked;
     @Column(name = "deleted")
     private boolean isDeleted;
+    @Column(name = "online")
+    private boolean isOnline;
     @Column(name = "created_on")
     private LocalDateTime createdOn;
     @Column(name = "updated_on")

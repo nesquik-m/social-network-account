@@ -19,6 +19,7 @@
             <column name="birth_date" type="timestamp"/>
             <column name="blocked" type="boolean"/>
             <column name="deleted" type="boolean"/>
+            <column name="online" type="boolean"/>
             <column name="created_on" type="timestamp"/>
             <column name="updated_on" type="timestamp"/>
         </createTable>

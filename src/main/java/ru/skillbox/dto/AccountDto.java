@@ -25,6 +25,7 @@ public class AccountDto {
     private LocalDateTime birthDate;
     private boolean isBlocked;
     private boolean isDeleted;
+    private boolean isOnline;
     private LocalDateTime createdOn;
     private LocalDateTime updatedOn;
 
