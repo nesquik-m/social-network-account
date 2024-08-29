@@ -47,6 +47,8 @@ public class AccountServiceImpl implements AccountService {
         Account createdAccount = Account.builder()
                 .id(UUID.randomUUID())
                 .email(kafkaAuthEvent.getEmail())
+                .firstName(kafkaAuthEvent.getFirstName())
+                .lastName(kafkaAuthEvent.getLastName())
                 .createdOn(LocalDateTime.now())
                 .updatedOn(LocalDateTime.now())
                 .build();

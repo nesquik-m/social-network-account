@@ -99,7 +99,6 @@ public class AccountController {
         // 200 (+ объект AccountDto), 400, 401
     }
 
-    //------- после исправлений на PageImpl<>
     @PostMapping("/searchByFilter") // +
     public List<AccountDto> searchAccountByFilter(@RequestBody @Valid AccountByFilterDto filterDto) {
         log.info("AccountController - searchAccountByFilter");
@@ -122,45 +121,6 @@ public class AccountController {
         // 200, 400, 401
     }
 
-    //------- до исправлений
-//    @PostMapping("/searchByFilter") // +
-//    public List<AccountDto> searchAccountByFilter(@RequestBody @Valid AccountByFilterDto filterDto) {
-//        log.info("AccountController - searchAccountByFilter");
-//        return accountMapper.accountListToAccountDtoList(accountService.filterBy(filterDto.getAccountSearchDto(),
-//                PageRequest.of(filterDto.getPageNumber(), filterDto.getPageSize())));
-//        // 200 (+ объект AccountDto), 400, 401
-//    }
-//
-////    @GetMapping("/search")
-////    public List<AccountDto> searchAccount(
-////            @RequestParam(required = false) List<UUID> ids,
-////            @RequestParam(required = false) String author,
-////            @RequestParam(required = false) String firstName,
-////            // ...
-////            @PageableDefault(sort = "firstName", direction = Sort.Direction.ASC) Pageable page) {
-////        log.info("AccountController - searchAccount");
-////        AccountSearchDto dto = AccountSearchDto.builder()
-////                .ids(ids)
-////                .author(author)
-////                .firstName(firstName)
-////                // ...
-////                .build();
-////        return accountMapper.accountListToAccountDtoList(accountService.filterBy(dto, page));
-////        // 200, 400, 401
-////    }
-//
-//    // {{8080}}/api/v1/account/search?author=Abagael Jolliss&page=0&size=10&sort=lastName,DESC
-//    // {{8080}}/api/v1/account/search?author=Abagael%20Jolliss&page=0&size=10&sort=lastName,DESC
-//    @GetMapping("/search")
-//    public List<AccountDto> searchAccount(
-//            @ModelAttribute AccountSearchDto dto,
-//            @PageableDefault(sort = "firstName", direction = Sort.Direction.ASC) Pageable page) {
-//        log.info("AccountController - searchAccount");
-//        return accountMapper.accountListToAccountDtoList(accountService.filterBy(dto, page));
-//        // 200, 400, 401
-//    }
-
-    //-------
     @GetMapping("/ids") // +
     public List<UUID> getAllAccountIds() {
         log.info("AccountController - getAllAccountIds");
@@ -176,9 +136,6 @@ public class AccountController {
         return accountMapper.accountListToAccountDtoList(accounts);
         // 200 (+ List<Account> + pageable), 400, 401
     }
-
-    // -- kafka-test
-
 
 }
 

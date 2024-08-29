@@ -1,8 +1,5 @@
 spring:
   datasource:
-#    url: jdbc:postgresql://localhost:5432/account
-#    url: jdbc:postgresql://89.111.174.153:5432/postgres
-#    url: jdbc:postgresql://89.111.174.153:5432/app_db
     url: jdbc:postgresql://89.111.174.153:5432/social-network-account
     username: postgres
     password: postgres
@@ -26,6 +23,5 @@ spring:
 app:
 
   kafka:
-#    kafkaNewRegistryTopic: "registry-topic"
     kafkaAuthTopic: "auth-topic"
     kafkaMessageGroupId: "kafka-message-group-id"
