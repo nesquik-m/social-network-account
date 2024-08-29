@@ -42,16 +42,16 @@ public class AccountController {
     @GetMapping("/me") // +
     public AccountDto getAccount() {
         log.info("AccountController - getAccount");
-        UUID accountId = UUID.fromString("c2def996-a11f-40d5-a3e5-0e3a3a39825e");
+        UUID accountId = UUID.fromString("9aba7f16-0673-47e9-b5f4-bcfc207e3fb9");
         Account currentAccount = accountService.getAccountById(accountId);
         return accountMapper.accountToAccountDto(currentAccount);
         // 200 (+ объект AccountDto!), 400, 401
     }
 
-    @PutMapping("/me") // TODO: разобраться, в тек. реализации если флаг был = true, то становится false
+    @PutMapping("/me")
     public AccountDto updateAccount(@RequestBody @Valid AccountDto accountDto) {
         log.info("AccountController - updateAccount");
-        UUID accountId = UUID.fromString("33b7b733-be17-4fd4-9d16-f650135f3821");
+        UUID accountId = UUID.fromString("9aba7f16-0673-47e9-b5f4-bcfc207e3fb9");
         Account updatedAccount = accountService.updateAccount(accountId, accountMapper.accountDtoToAccount(accountDto));
         return accountMapper.accountToAccountDto(updatedAccount);
         // 200 (+ объект AccountDto!), 400, 401, 404

@@ -62,7 +62,7 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     public void deleteAccount(UUID accountId) {
         Account updatedAccount = getAccountById(accountId);
-        updatedAccount.setDeleted(true);
+        updatedAccount.setIsDeleted(true);
         accountRepository.save(updatedAccount);
     }
 

@@ -27,11 +27,11 @@ public class Account {
     @Column(name = "birth_date")
     private LocalDateTime birthDate;
     @Column(name = "blocked")
-    private boolean isBlocked;
+    private Boolean isBlocked;
     @Column(name = "deleted")
-    private boolean isDeleted;
+    private Boolean isDeleted;
     @Column(name = "online")
-    private boolean isOnline;
+    private Boolean isOnline;
     @Column(name = "created_on")
     private LocalDateTime createdOn;
     @Column(name = "updated_on")
