@@ -33,25 +33,26 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account getAccountById(UUID accountId) {
+        log.info("Get account by ID: {}", accountId);
         return accountRepository.findById(accountId)
                 .orElseThrow(() -> new AccountNotFoundException(
-                        MessageFormat.format("Аккаунт с id {0} не найден!", accountId)));
+                        MessageFormat.format("Account not found for ID: {0}", accountId)));
     }
 
     @Override
     public Account createAccount(KafkaAuthEvent kafkaAuthEvent) {
-
         if (accountRepository.existsByEmail(kafkaAuthEvent.getEmail())) {
             throw new AlreadyExistsException(
                     MessageFormat.format("Аккаунт с email {0} уже существует!", kafkaAuthEvent.getEmail()));
         }
-
+        log.info("Create account by email: {}", kafkaAuthEvent.getEmail());
         return accountRepository.save(accountMapper.kafkaAuthEventToAccount(kafkaAuthEvent));
     }
 
     @Override
     @Transactional
     public Account updateAccount(UUID accountId, Account account) {
+        log.info("Update account with ID: {}", accountId);
         Account updatedAccount = getAccountById(accountId);
         BeanUtils.copyNonNullProperties(account, updatedAccount);
         updatedAccount.setUpdatedOn(LocalDateTime.now());
@@ -61,6 +62,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     public void deleteAccount(UUID accountId) {
+        log.info("Delete account with ID: {}", accountId);
         Account updatedAccount = getAccountById(accountId);
         updatedAccount.setIsDeleted(true);
         accountRepository.save(updatedAccount);
@@ -73,36 +75,42 @@ public class AccountServiceImpl implements AccountService {
         if (updated == 0) {
 
             if (accountRepository.findById(accountId).isEmpty()) {
-                throw new AccountNotFoundException(MessageFormat.format("Аккаунт с id {0} не найден!", accountId));
+                throw new AccountNotFoundException(MessageFormat.format("Account not found for ID: {0}", accountId));
             }
 
             throw new BadRequestException(
-                    MessageFormat.format("Статус блокировки для аккаунта {0} не был изменен!", accountId));
+                    MessageFormat.format("Blocked status for account with ID {0} was not updated", accountId));
         }
+        log.info("Update blocked status '{}' for account with ID: {}", isBlocked, accountId);
     }
 
     @Override
     public List<UUID> getAllAccountIds() {
+        log.info("Get all account IDs");
         return accountRepository.findAllIds();
     }
 
     @Override
     public List<Account> getAccountsByTheirId(List<UUID> ids, Pageable pageable) {
+        log.info("Get accounts by IDs");
         return accountRepository.findAccountsByIds(ids, pageable).getContent();
     }
 
     @Override
     public List<Account> getAllAccounts(Pageable pageable) {
+        log.info("Get all accounts");
         return accountRepository.findAll(pageable).getContent();
     }
 
     @Override
     public Page<Account> filterBy(AccountSearchDto accountSearchDto, Pageable pageable) {
+        log.info("Get accounts by filter");
         return accountRepository.findAll(AccountSpecification.withFilter(accountSearchDto), pageable);
     }
 
     @Override
     public List<Account> searchAccount(AccountSearchDto accountSearchDto) {
+        log.info("Search account");
         return List.of();
     }
 
