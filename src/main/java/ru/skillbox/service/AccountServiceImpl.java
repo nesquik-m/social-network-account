@@ -13,6 +13,7 @@ import ru.skillbox.dto.kafka.KafkaAuthEvent;
 import ru.skillbox.entity.Account;
 import ru.skillbox.exception.AccountNotFoundException;
 import ru.skillbox.exception.AlreadyExistsException;
+import ru.skillbox.mapper.AccountMapper;
 import ru.skillbox.repository.AccountRepository;
 import ru.skillbox.repository.AccountSpecification;
 import ru.skillbox.utils.BeanUtils;
@@ -29,6 +30,8 @@ public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
 
+    private final AccountMapper accountMapper;
+
     @Override
     public Account getAccountById(UUID accountId) {
         return accountRepository.findById(accountId)
@@ -44,16 +47,7 @@ public class AccountServiceImpl implements AccountService {
                     MessageFormat.format("Аккаунт с email {0} уже существует!", kafkaAuthEvent.getEmail()));
         }
 
-        Account createdAccount = Account.builder()
-                .id(UUID.randomUUID())
-                .email(kafkaAuthEvent.getEmail())
-                .firstName(kafkaAuthEvent.getFirstName())
-                .lastName(kafkaAuthEvent.getLastName())
-                .createdOn(LocalDateTime.now())
-                .updatedOn(LocalDateTime.now())
-                .build();
-
-        return accountRepository.save(createdAccount);
+        return accountRepository.save(accountMapper.kafkaAuthEventToAccount(kafkaAuthEvent));
     }
 
     @Override

@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class KafkaAuthConfiguration {
+public class KafkaConfiguration {
 
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
