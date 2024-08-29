@@ -17,8 +17,8 @@
             <column name="first_name" type="varchar(100)"/>
             <column name="last_name" type="varchar(100)"/>
             <column name="birth_date" type="timestamp"/>
-            <column name="is_blocked" type="boolean"/>
-            <column name="is_deleted" type="boolean"/>
+            <column name="blocked" type="boolean"/>
+            <column name="deleted" type="boolean"/>
             <column name="created_on" type="timestamp"/>
             <column name="updated_on" type="timestamp"/>
         </createTable>

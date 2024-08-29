@@ -42,7 +42,7 @@ public class AccountController {
     @GetMapping("/me") // +
     public AccountDto getAccount() {
         log.info("AccountController - getAccount");
-        UUID accountId = UUID.fromString("2f4ce05b-39c3-4541-a02a-2cc0c63d6ade");
+        UUID accountId = UUID.fromString("c2def996-a11f-40d5-a3e5-0e3a3a39825e");
         Account currentAccount = accountService.getAccountById(accountId);
         return accountMapper.accountToAccountDto(currentAccount);
         // 200 (+ объект AccountDto!), 400, 401
@@ -66,11 +66,10 @@ public class AccountController {
         // 200 (+ "Successfully"), 400, 401, 404
     }
 
-    // объединить в один в сервисе
     @PutMapping("/block/{id}") // +
     public String blockAccount(@PathVariable("id") UUID accountId) {
         log.info("AccountController - blockAccount");
-        accountService.blockAccount(accountId);
+        accountService.updateBlocked(accountId, true);
         return "Successfully";
         // 200 (+ "Successfully"), 400, 401, 404
     }
@@ -79,7 +78,7 @@ public class AccountController {
     public String unblockAccount(@PathVariable("id") UUID accountId) {
         // TODO: Логика разблокировки аккаунта: Сервис авторизации?
         log.info("AccountController - unblockAccount");
-        accountService.unblockAccount(accountId);
+        accountService.updateBlocked(accountId, false);
         return "Successfully";
         // 200 (+ "Successfully"), 400, 401, 404
     }
@@ -110,7 +109,7 @@ public class AccountController {
 
     // {{8080}}/api/v1/account/search?author=Abagael Jolliss&page=0&size=10&sort=lastName,DESC
     // {{8080}}/api/v1/account/search?author=Abagael%20Jolliss&page=0&size=10&sort=lastName,DESC
-    @GetMapping("/search")
+    @GetMapping("/search") // +
     public PageImpl<AccountDto> searchAccount(
             @ModelAttribute AccountSearchDto dto,
             @PageableDefault(sort = "firstName", direction = Sort.Direction.ASC) Pageable page) {

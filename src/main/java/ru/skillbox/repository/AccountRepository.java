@@ -4,7 +4,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.skillbox.entity.Account;
 
@@ -15,6 +17,10 @@ import java.util.UUID;
 public interface AccountRepository extends JpaRepository<Account, UUID>, JpaSpecificationExecutor<Account> {
 
     boolean existsByEmail(String email);
+
+    @Modifying
+    @Query("UPDATE Account a SET a.isBlocked = :blocked WHERE a.id = :accountId")
+    int updateBlocked(UUID accountId, boolean blocked);
 
     @Query("SELECT a.id FROM Account a")
     List<UUID> findAllIds();

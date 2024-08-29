@@ -26,9 +26,9 @@ public class Account {
     private String lastName;
     @Column(name = "birth_date")
     private LocalDateTime birthDate;
-    @Column(name = "is_blocked")
+    @Column(name = "blocked")
     private boolean isBlocked;
-    @Column(name = "is_deleted")
+    @Column(name = "deleted")
     private boolean isDeleted;
     @Column(name = "created_on")
     private LocalDateTime createdOn;
@@ -61,9 +61,9 @@ public class Account {
 //    private LocalDateTime lastOnlineTime;
 //    @Column(name = "is_online")
 //    private boolean isOnline;
-//    @Column(name = "is_blocked")
+//    @Column(name = "blocked")
 //    private boolean isBlocked;
-//    @Column(name = "is_deleted")
+//    @Column(name = "deleted")
 //    private boolean isDeleted;
 //    @Column(name = "photo_id")
 //    private String photoId;

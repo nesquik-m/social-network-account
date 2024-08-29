@@ -3,16 +3,15 @@ package ru.skillbox.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.skillbox.dto.AccountByFilterDto;
 import ru.skillbox.dto.AccountSearchDto;
 import ru.skillbox.dto.kafka.KafkaAuthEvent;
 import ru.skillbox.entity.Account;
 import ru.skillbox.exception.AccountNotFoundException;
 import ru.skillbox.exception.AlreadyExistsException;
+import ru.skillbox.exception.BadRequestException;
 import ru.skillbox.mapper.AccountMapper;
 import ru.skillbox.repository.AccountRepository;
 import ru.skillbox.repository.AccountSpecification;
@@ -36,7 +35,7 @@ public class AccountServiceImpl implements AccountService {
     public Account getAccountById(UUID accountId) {
         return accountRepository.findById(accountId)
                 .orElseThrow(() -> new AccountNotFoundException(
-                        MessageFormat.format("Пользователь с ID {0} не найден!", accountId)));
+                        MessageFormat.format("Аккаунт с id {0} не найден!", accountId)));
     }
 
     @Override
@@ -67,20 +66,19 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.save(updatedAccount);
     }
 
-    // нативным запросом поменять boolean, не тащить весь объект!
     @Override
     @Transactional
-    public void blockAccount(UUID accountId) {
-        Account updatedAccount = getAccountById(accountId);
-        updatedAccount.setBlocked(true);
-        accountRepository.save(updatedAccount);
-    }
+    public void updateBlocked(UUID accountId, boolean isBlocked) {
+        int updated = accountRepository.updateBlocked(accountId, isBlocked);
+        if (updated == 0) {
 
-    @Override
-    public void unblockAccount(UUID accountId) {
-        Account updatedAccount = getAccountById(accountId);
-        updatedAccount.setBlocked(false);
-        accountRepository.save(updatedAccount);
+            if (accountRepository.findById(accountId).isEmpty()) {
+                throw new AccountNotFoundException(MessageFormat.format("Аккаунт с id {0} не найден!", accountId));
+            }
+
+            throw new BadRequestException(
+                    MessageFormat.format("Статус блокировки для аккаунта {0} не был изменен!", accountId));
+        }
     }
 
     @Override
@@ -97,13 +95,6 @@ public class AccountServiceImpl implements AccountService {
     public List<Account> getAllAccounts(Pageable pageable) {
         return accountRepository.findAll(pageable).getContent();
     }
-
-    // ----- до исправлений
-//    @Override
-//    public List<Account> filterBy(AccountSearchDto accountSearchDto, Pageable pageable) {
-//        return accountRepository.findAll(AccountSpecification.withFilter(accountSearchDto), pageable).getContent();
-//    }
-    // -----
 
     @Override
     public Page<Account> filterBy(AccountSearchDto accountSearchDto, Pageable pageable) {
