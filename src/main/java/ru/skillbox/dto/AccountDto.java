@@ -39,7 +39,7 @@ public class AccountDto {
 //    @NotNull(message = "Поле 'photo' не должно быть пустым")
 //    private String photo;
 //    @NotNull(message = "Поле 'about' не должно быть пустым")
-//    private String about;
+//    private String about; // *
 //    @NotNull(message = "Поле 'city' не должно быть пустым")
 //    private String city;
 //    @NotNull(message = "Поле 'country' не должно быть пустым")
@@ -55,7 +55,7 @@ public class AccountDto {
 //    @NotNull(message = "Поле 'regDate' не должно быть пустым")
 //    private LocalDateTime regDate; // String
 //    @NotNull(message = "Поле 'birthDate' не должно быть пустым")
-//    private LocalDateTime birthDate; // String
+//    private LocalDateTime birthDate; // **
 //    @NotNull(message = "Поле 'messagePermission' не должно быть пустым")
 //    private String messagePermission;
 //    @NotNull(message = "Поле 'lastOnlineTime' не должно быть пустым")

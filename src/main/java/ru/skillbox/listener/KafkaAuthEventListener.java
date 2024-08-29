@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import ru.skillbox.dto.kafka.KafkaAuthEvent;
 import ru.skillbox.dto.kafka.KafkaNewAccountEvent;
 import ru.skillbox.entity.Account;
+import ru.skillbox.exception.AlreadyExistsException;
 import ru.skillbox.mapper.AccountMapper;
 import ru.skillbox.service.AccountService;
 
@@ -35,13 +36,19 @@ public class KafkaAuthEventListener {
             groupId = "${app.kafka.kafkaMessageGroupId}",
             containerFactory = "kafkaAuthEventConcurrentKafkaListenerContainerFactory")
     public void listenEventAuth(@Payload KafkaAuthEvent kafkaAuthEvent,
-                                   @Header(value = KafkaHeaders.RECEIVED_KEY, required = false) UUID key,
-                                   @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
-                                   @Header(KafkaHeaders.RECEIVED_PARTITION) Integer partition,
-                                   @Header(KafkaHeaders.RECEIVED_TIMESTAMP) Long timestamp) {
+                                @Header(value = KafkaHeaders.RECEIVED_KEY, required = false) UUID key,
+                                @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+                                @Header(KafkaHeaders.RECEIVED_PARTITION) Integer partition,
+                                @Header(KafkaHeaders.RECEIVED_TIMESTAMP) Long timestamp) {
 
-        Account createdAccount = accountService.createAccount(kafkaAuthEvent);
-        kafkaTemplate.send(topicName, accountMapper.accountToKafkaNewAccountEvent(createdAccount));
+        try {
+            Account createdAccount = accountService.createAccount(kafkaAuthEvent);
+            kafkaTemplate.send(topicName, accountMapper.accountToKafkaNewAccountEvent(createdAccount));
+        } catch (AlreadyExistsException e) {
+            log.info("Аккаунт с email {} уже существует. Пропускаем событие.", kafkaAuthEvent.getEmail());
+        } catch (Exception e) {
+            log.info("Ошибка при обработке события: {}", e.getMessage(), e);
+        }
 
     }
 
