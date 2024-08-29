@@ -13,6 +13,7 @@ import org.springframework.kafka.core.*;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import ru.skillbox.dto.kafka.KafkaAuthEvent;
+import ru.skillbox.dto.kafka.KafkaNewAccountEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,22 +26,6 @@ public class KafkaAuthConfiguration {
 
     @Value("${app.kafka.kafkaMessageGroupId}")
     private String kafkaMessageGroupId;
-
-    @Bean
-    public ProducerFactory<String, KafkaAuthEvent> kafkaAuthEventProducerFactory(ObjectMapper objectMapper) { // Нет, отправлять в другой топик. Другой объект!
-        Map<String, Object> config = new HashMap<>();
-
-        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-
-        return new DefaultKafkaProducerFactory<>(config, new StringSerializer(), new JsonSerializer<>(objectMapper));
-    }
-
-    @Bean
-    public KafkaTemplate<String, KafkaAuthEvent> kafkaAuthEventTemplate(ProducerFactory<String, KafkaAuthEvent> kafkaAuthEventProducerFactory) {
-        return new KafkaTemplate<>(kafkaAuthEventProducerFactory);
-    }
 
     @Bean
     public ConsumerFactory<String, KafkaAuthEvent> kafkaAuthEventConsumerFactory(ObjectMapper objectMapper) {
@@ -62,6 +47,22 @@ public class KafkaAuthConfiguration {
         factory.setConsumerFactory(kafkaAuthEventConsumerFactory);
 
         return factory;
+    }
+
+    @Bean
+    public ProducerFactory<String, KafkaNewAccountEvent> kafkaNewAccountEventProducerFactory(ObjectMapper objectMapper) {
+        Map<String, Object> config = new HashMap<>();
+
+        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+
+        return new DefaultKafkaProducerFactory<>(config, new StringSerializer(), new JsonSerializer<>(objectMapper));
+    }
+
+    @Bean
+    public KafkaTemplate<String, KafkaNewAccountEvent> kafkaTemplate(ProducerFactory<String, KafkaNewAccountEvent> kafkaNewAccountEventProducerFactory) {
+        return new KafkaTemplate<>(kafkaNewAccountEventProducerFactory);
     }
 
 }

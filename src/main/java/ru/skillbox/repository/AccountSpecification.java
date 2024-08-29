@@ -39,21 +39,6 @@ public interface AccountSpecification {
     }
     */
 
-//    static Specification<Account> withFilter(AccountByFilterDto filter) {
-//        AccountSearchDto asd = filter.getAccountSearchDto();
-//        return Specification.where(byIds(asd.getIds()))
-//                .and(byAuthor(asd.getAuthor()))
-//                .and(byFirstName(asd.getFirstName()))
-//                .and(byLastName(asd.getLastName()))
-//                .and(byBirthDate(asd.getBirthDateFrom(), asd.getBirthDateTo()))
-//                .and(byCity(asd.getCity()))
-//                .and(byCountry(asd.getCountry()))
-//                .and(byBlocked(asd.isBlocked()))
-//                .and(byDeleted(asd.isDeleted()))
-//                .and(byAge(asd.getAgeFrom(), asd.getAgeTo()))
-//                ;
-//    }
-
     static Specification<Account> withFilter(AccountSearchDto asd) {
         return Specification.where(byIds(asd.getIds()))
                 .and(byAuthor(asd.getAuthor()))

@@ -24,4 +24,5 @@ app:
 
   kafka:
     kafkaAuthTopic: "auth-topic"
+    kafkaNewAccountTopic: "new-account-topic"
     kafkaMessageGroupId: "kafka-message-group-id"

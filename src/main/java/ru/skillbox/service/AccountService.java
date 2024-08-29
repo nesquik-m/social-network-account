@@ -11,8 +11,6 @@ import java.util.UUID;
 
 public interface AccountService {
 
-
-
     Account getAccountById(UUID accountId);
 
     Account createAccount(KafkaAuthEvent kafkaAuthEvent);
@@ -30,10 +28,6 @@ public interface AccountService {
     List<Account> getAccountsByTheirId(List<UUID> ids, Pageable pageable);
 
     List<Account> getAllAccounts(Pageable pageable);
-
-    // ----- до исправлений
-//    List<Account> filterBy(AccountSearchDto accountSearchDto, Pageable pageable);
-    // -----
 
     Page<Account> filterBy(AccountSearchDto accountSearchDto, Pageable pageable);
 

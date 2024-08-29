@@ -3,6 +3,7 @@ package ru.skillbox.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import ru.skillbox.dto.AccountDto;
+import ru.skillbox.dto.kafka.KafkaNewAccountEvent;
 import ru.skillbox.entity.Account;
 
 import java.util.List;
@@ -15,5 +16,7 @@ public interface AccountMapper {
     AccountDto accountToAccountDto(Account accountDto);
 
     List<AccountDto> accountListToAccountDtoList(List<Account> accounts);
+
+    KafkaNewAccountEvent accountToKafkaNewAccountEvent(Account account);
 
 }
