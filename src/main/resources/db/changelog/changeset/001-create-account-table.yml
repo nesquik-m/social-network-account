@@ -1,0 +1,47 @@
+databaseChangeLog:
+  
+  - changeSet:
+      id: create-account-table
+      author: Anastasia Martova
+      changes:
+        - createTable:
+            tableName: account
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: email
+                  type: varchar(255)
+              - column:
+                  name: city
+                  type: varchar(50)
+              - column:
+                  name: country
+                  type: varchar(50)
+              - column:
+                  name: first_name
+                  type: varchar(100)
+              - column:
+                  name: last_name
+                  type: varchar(100)
+              - column:
+                  name: birth_date
+                  type: timestamp
+              - column:
+                  name: blocked
+                  type: boolean
+              - column:
+                  name: deleted
+                  type: boolean
+              - column:
+                  name: online
+                  type: boolean
+              - column:
+                  name: created_on
+                  type: timestamp
+              - column:
+                  name: updated_on
+                  type: timestamp
