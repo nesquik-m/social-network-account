@@ -26,8 +26,8 @@ public class Account {
     private String lastName;
     @Column(name = "birth_date")
     private LocalDateTime birthDate;
-//    @Column(name = "blocked")
-//    private Boolean isBlocked;
+    @Column(name = "blocked")
+    private Boolean isBlocked;
     @Column(name = "deleted")
     private Boolean isDeleted;
     @Column(name = "online")

@@ -23,7 +23,7 @@ public class AccountDto {
     @NotNull(message = "Поле 'lastName' не должно быть пустым")
     private String lastName;
     private LocalDateTime birthDate;
-//    private Boolean isBlocked;
+    private Boolean isBlocked;
     private Boolean isDeleted;
     private Boolean isOnline;
     private LocalDateTime createdOn;

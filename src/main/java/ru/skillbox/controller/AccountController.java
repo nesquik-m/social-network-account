@@ -10,8 +10,6 @@ import ru.skillbox.dto.AccountByFilterDto;
 import ru.skillbox.dto.AccountDto;
 import ru.skillbox.dto.AccountRecoveryRq;
 import ru.skillbox.dto.AccountSearchDto;
-import ru.skillbox.entity.Account;
-import ru.skillbox.mapper.AccountMapper;
 import ru.skillbox.service.AccountService;
 
 import java.util.List;
@@ -25,8 +23,6 @@ public class AccountController {
 
     private final AccountService accountService;
 
-    private final AccountMapper accountMapper;
-
     @PutMapping("/recovery")
     public String accountRecovery(@RequestBody AccountRecoveryRq accountRecoveryRq) { // TODO: Security
         // TODO: Логика восстановления аккаунта: Сервис авторизации?
@@ -35,64 +31,54 @@ public class AccountController {
     }
 
     @GetMapping("/me") // +
-    public AccountDto getAccount() { // TODO: Security
-        UUID accountId = UUID.fromString("9aba7f16-0673-47e9-b5f4-bcfc207e3fb9");
-        Account currentAccount = accountService.getAccountById(accountId);
-        return accountMapper.accountToAccountDto(currentAccount);
+    public AccountDto getAccount() {
+        return accountService.getAccount();
         // 200 (+ объект AccountDto!), 400, 401
     }
 
     @PutMapping("/me") // +
-    public AccountDto updateAccount(@RequestBody @Valid AccountDto accountDto) { // TODO: Security
-        UUID accountId = UUID.fromString("9aba7f16-0673-47e9-b5f4-bcfc207e3fb9");
-        Account updatedAccount = accountService.updateAccount(accountId, accountMapper.accountDtoToAccount(accountDto));
-        return accountMapper.accountToAccountDto(updatedAccount);
+    public AccountDto updateAccount(@RequestBody @Valid AccountDto accountDto) {
+        return accountService.updateAccount(accountDto);
         // 200 (+ объект AccountDto!), 400, 401, 404
     }
 
     @DeleteMapping // +
-    public String deleteAccount() { // TODO: Security
-        UUID accountId = UUID.fromString("1dfa36a4-fef9-4dd8-b080-f385b0756ae4");
-        accountService.deleteAccount(accountId); // возвращает 404
+    public String deleteAccount() {
+        accountService.deleteAccount();
         return "Successfully";
         // 200 (+ "Successfully"), 400, 401, 404
     }
 
     @PutMapping("/block/{id}") // +
-    public String blockAccount(@PathVariable("id") UUID blockedAccountId) { // TODO: Security
-        UUID accountId = UUID.fromString("4b7bbd0c-10db-4e8e-9a3d-7556137c2601");
-        accountService.manageAccountBlock(accountId, blockedAccountId, true);
+    public String blockAccount(@PathVariable("id") UUID accountId) {
+        accountService.manageAccountBlock(accountId, true);
         return "Successfully";
         // 200 (+ "Successfully"), 400, 401, 404
     }
 
     @DeleteMapping("/block/{id}") // +
-    public String unblockAccount(@PathVariable("id") UUID blockedAccountId) { // TODO: Security
-        // TODO: Логика разблокировки аккаунта: Сервис авторизации?
-        UUID accountId = UUID.fromString("4b7bbd0c-10db-4e8e-9a3d-7556137c2601");
-        accountService.manageAccountBlock(accountId, blockedAccountId, false);
+    public String unblockAccount(@PathVariable("id") UUID accountId) {
+        accountService.manageAccountBlock(accountId, false);
         return "Successfully";
         // 200 (+ "Successfully"), 400, 401, 404
     }
 
     @GetMapping // +
-    public List<AccountDto> getAllAccounts(@PageableDefault(sort = "firstName", direction = Sort.Direction.ASC) Pageable page) {
-        List<Account> accounts = accountService.getAllAccounts(page);
-        return accountMapper.accountListToAccountDtoList(accounts);
+    public PageImpl<AccountDto> getAllAccounts(@PageableDefault(sort = "firstName", direction = Sort.Direction.ASC) Pageable page) {
+        return accountService.getAllAccounts(page);
         // возвращать 200, 400, 401
     }
 
     @GetMapping("/{id}") // +
     public AccountDto getAccountById(@PathVariable("id") UUID accountId) {
-        return accountMapper.accountToAccountDto(accountService.getAccountById(accountId));
+        return accountService.getAccountDtoById(accountId);
         // 200 (+ объект AccountDto), 400, 401
     }
 
     @PostMapping("/searchByFilter") // +
-    public List<AccountDto> searchAccountByFilter(@RequestBody @Valid AccountByFilterDto filterDto) {
-        Page<Account> accounts = accountService.filterBy(filterDto.getAccountSearchDto(),
+    public PageImpl<AccountDto> searchAccountByFilter(@RequestBody @Valid AccountByFilterDto filterDto) {
+        return accountService.filterBy(filterDto.getAccountSearchDto(),
                 PageRequest.of(filterDto.getPageNumber(), filterDto.getPageSize()));
-        return accountMapper.accountListToAccountDtoList(accounts.getContent());
         // 200 (+ объект AccountDto), 400, 401
     }
 
@@ -101,9 +87,7 @@ public class AccountController {
     @GetMapping("/search") // +
     public PageImpl<AccountDto> searchAccount(@ModelAttribute AccountSearchDto dto,
                                               @PageableDefault(sort = "firstName", direction = Sort.Direction.ASC) Pageable page) {
-        Page<Account> accountPage = accountService.filterBy(dto, page);
-        List<AccountDto> accountDtoList = accountMapper.accountListToAccountDtoList(accountPage.getContent());
-        return new PageImpl<>(accountDtoList, page, accountPage.getTotalElements());
+        return accountService.searchAccount(dto, page);
         // 200, 400, 401
     }
 
@@ -114,10 +98,9 @@ public class AccountController {
     }
 
     @GetMapping("/accountIds") // +
-    public List<AccountDto> getAccountsByTheirIds(@RequestParam List<UUID> ids,
+    public PageImpl<AccountDto> getAccountsByTheirIds(@RequestParam List<UUID> ids,
                                                   @PageableDefault(sort = "firstName", direction = Sort.Direction.ASC) Pageable page) {
-        List<Account> accounts = accountService.getAccountsByTheirId(ids, page);
-        return accountMapper.accountListToAccountDtoList(accounts);
+        return accountService.getAccountsByTheirId(ids, page);
         // 200 (+ List<Account> + pageable), 400, 401
     }
 
