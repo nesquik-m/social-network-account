@@ -5,7 +5,7 @@ databaseChangeLog:
       author: Anastasia Martova
       changes:
         - createTable:
-            tableName: account
+            tableName: accounts
             columns:
               - column:
                   name: id
@@ -30,9 +30,9 @@ databaseChangeLog:
               - column:
                   name: birth_date
                   type: timestamp
-              - column:
-                  name: blocked
-                  type: boolean
+#              - column:
+#                  name: blocked
+#                  type: boolean
               - column:
                   name: deleted
                   type: boolean

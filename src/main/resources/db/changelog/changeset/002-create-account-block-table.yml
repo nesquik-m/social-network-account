@@ -1,0 +1,43 @@
+databaseChangeLog:
+  
+  - changeSet:
+      id: create-account-block-table
+      author: Anastasia Martova
+      changes:
+        - createTable:
+            tableName: blocked_accounts
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: account_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+              - column:
+                  name: blocked_account_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: blocked_accounts
+            baseColumnNames: account_id
+            referencedTableName: accounts
+            referencedColumnNames: id
+            constraintName: fk_account_blocked_account
+
+        - addForeignKeyConstraint:
+            baseTableName: blocked_accounts
+            baseColumnNames: blocked_account_id
+            referencedTableName: accounts
+            referencedColumnNames: id
+            constraintName: fk_account_blocked_blocked_account
+
+        - addUniqueConstraint:
+            tableName: blocked_accounts
+            columnNames: account_id, blocked_account_id
+            constraintName: uq_account_blocked

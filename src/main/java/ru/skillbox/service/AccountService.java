@@ -19,7 +19,11 @@ public interface AccountService {
 
     void deleteAccount(UUID accountId);
 
-    void updateBlocked(UUID accountId, boolean blocked);
+//    void blockAccount(UUID accountId, UUID blockedAccountId);
+//
+//    void unblockAccount(UUID accountId, UUID blockedAccountId);
+
+    void manageAccountBlock(UUID accountId, UUID blockedAccountId, boolean block);
 
     List<UUID> getAllAccountIds();
 

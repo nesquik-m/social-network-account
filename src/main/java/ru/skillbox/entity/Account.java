@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "account")
+@Table(name = "accounts")
 @Data
 @Builder
 @ToString
@@ -26,8 +26,8 @@ public class Account {
     private String lastName;
     @Column(name = "birth_date")
     private LocalDateTime birthDate;
-    @Column(name = "blocked")
-    private Boolean isBlocked;
+//    @Column(name = "blocked")
+//    private Boolean isBlocked;
     @Column(name = "deleted")
     private Boolean isDeleted;
     @Column(name = "online")

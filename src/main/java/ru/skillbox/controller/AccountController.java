@@ -28,14 +28,14 @@ public class AccountController {
     private final AccountMapper accountMapper;
 
     @PutMapping("/recovery")
-    public String accountRecovery(@RequestBody AccountRecoveryRq accountRecoveryRq) {
+    public String accountRecovery(@RequestBody AccountRecoveryRq accountRecoveryRq) { // TODO: Security
         // TODO: Логика восстановления аккаунта: Сервис авторизации?
         return "Successfully";
         // 200 (+ "Successfully"), 400, 401, 404
     }
 
     @GetMapping("/me") // +
-    public AccountDto getAccount() {
+    public AccountDto getAccount() { // TODO: Security
         UUID accountId = UUID.fromString("9aba7f16-0673-47e9-b5f4-bcfc207e3fb9");
         Account currentAccount = accountService.getAccountById(accountId);
         return accountMapper.accountToAccountDto(currentAccount);
@@ -43,7 +43,7 @@ public class AccountController {
     }
 
     @PutMapping("/me") // +
-    public AccountDto updateAccount(@RequestBody @Valid AccountDto accountDto) {
+    public AccountDto updateAccount(@RequestBody @Valid AccountDto accountDto) { // TODO: Security
         UUID accountId = UUID.fromString("9aba7f16-0673-47e9-b5f4-bcfc207e3fb9");
         Account updatedAccount = accountService.updateAccount(accountId, accountMapper.accountDtoToAccount(accountDto));
         return accountMapper.accountToAccountDto(updatedAccount);
@@ -51,7 +51,7 @@ public class AccountController {
     }
 
     @DeleteMapping // +
-    public String deleteAccount() {
+    public String deleteAccount() { // TODO: Security
         UUID accountId = UUID.fromString("1dfa36a4-fef9-4dd8-b080-f385b0756ae4");
         accountService.deleteAccount(accountId); // возвращает 404
         return "Successfully";
@@ -59,16 +59,18 @@ public class AccountController {
     }
 
     @PutMapping("/block/{id}") // +
-    public String blockAccount(@PathVariable("id") UUID accountId) {
-        accountService.updateBlocked(accountId, true);
+    public String blockAccount(@PathVariable("id") UUID blockedAccountId) { // TODO: Security
+        UUID accountId = UUID.fromString("4b7bbd0c-10db-4e8e-9a3d-7556137c2601");
+        accountService.manageAccountBlock(accountId, blockedAccountId, true);
         return "Successfully";
         // 200 (+ "Successfully"), 400, 401, 404
     }
 
     @DeleteMapping("/block/{id}") // +
-    public String unblockAccount(@PathVariable("id") UUID accountId) {
+    public String unblockAccount(@PathVariable("id") UUID blockedAccountId) { // TODO: Security
         // TODO: Логика разблокировки аккаунта: Сервис авторизации?
-        accountService.updateBlocked(accountId, false);
+        UUID accountId = UUID.fromString("4b7bbd0c-10db-4e8e-9a3d-7556137c2601");
+        accountService.manageAccountBlock(accountId, blockedAccountId, false);
         return "Successfully";
         // 200 (+ "Successfully"), 400, 401, 404
     }

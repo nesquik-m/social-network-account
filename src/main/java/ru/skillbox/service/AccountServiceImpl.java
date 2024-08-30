@@ -1,7 +1,9 @@
 package ru.skillbox.service;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -9,12 +11,14 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.skillbox.dto.AccountSearchDto;
 import ru.skillbox.dto.kafka.KafkaAuthEvent;
 import ru.skillbox.entity.Account;
+import ru.skillbox.entity.BlockAccount;
 import ru.skillbox.exception.AccountNotFoundException;
 import ru.skillbox.exception.AlreadyExistsException;
 import ru.skillbox.exception.BadRequestException;
 import ru.skillbox.mapper.AccountMapper;
 import ru.skillbox.repository.AccountRepository;
 import ru.skillbox.repository.AccountSpecification;
+import ru.skillbox.repository.BlockAccountRepository;
 import ru.skillbox.utils.BeanUtils;
 
 import java.text.MessageFormat;
@@ -28,6 +32,8 @@ import java.util.UUID;
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
+
+    private final BlockAccountRepository blockAccountRepository;
 
     private final AccountMapper accountMapper;
 
@@ -46,7 +52,9 @@ public class AccountServiceImpl implements AccountService {
                     MessageFormat.format("Аккаунт с email {0} уже существует!", kafkaAuthEvent.getEmail()));
         }
         log.info("Create account by email: {}", kafkaAuthEvent.getEmail());
-        return accountRepository.save(accountMapper.kafkaAuthEventToAccount(kafkaAuthEvent));
+        Account createdAccount = accountMapper.kafkaAuthEventToAccount(kafkaAuthEvent);
+        createdAccount.setIsDeleted(false);
+        return accountRepository.save(createdAccount);
     }
 
     @Override
@@ -70,18 +78,38 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
-    public void updateBlocked(UUID accountId, boolean isBlocked) {
-        int updated = accountRepository.updateBlocked(accountId, isBlocked);
-        if (updated == 0) {
-
-            if (accountRepository.findById(accountId).isEmpty()) {
-                throw new AccountNotFoundException(MessageFormat.format("Account not found for ID: {0}", accountId));
-            }
-
-            throw new BadRequestException(
-                    MessageFormat.format("Blocked status for account with ID {0} was not updated", accountId));
+    public void manageAccountBlock(UUID accountId, UUID blockedAccountId, boolean block) {
+        if (accountRepository.findById(accountId).isEmpty()) {
+            throw new AccountNotFoundException(MessageFormat.format("Account not found for ID: {0}", accountId));
         }
-        log.info("Update blocked status '{}' for account with ID: {}", isBlocked, accountId);
+        if (accountRepository.findById(blockedAccountId).isEmpty()) {
+            throw new AccountNotFoundException(MessageFormat.format("Account not found for ID: {0}", blockedAccountId));
+        }
+
+        if (block) {
+            try {
+                BlockAccount blockAccount = BlockAccount.builder()
+                        .accountId(accountId)
+                        .blockedAccountId(blockedAccountId)
+                        .build();
+                blockAccountRepository.save(blockAccount);
+                log.error("Account is blocked: {} -> {}", accountId, blockedAccountId);
+            } catch (DataIntegrityViolationException e) {
+                /* Как его убрать?
+                ERROR: duplicate key value violates unique constraint "uq_account_blocked"
+                Подробности: Key (account_id, blocked_account_id)=(4b7bbd0c-10db-4e8e-9a3d-7556137c2601, 9ab07a7f-cd14-4780-b575-f6aa4a6a45f3) already exists.
+                */
+                throw new BadRequestException(
+                        MessageFormat.format("Account is already blocked: {0} -> {1}", accountId, blockedAccountId));
+            }
+        } else {
+            int unblocked = blockAccountRepository.unblockAccount(accountId, blockedAccountId);
+            if (unblocked == 0) {
+                throw new BadRequestException(
+                        MessageFormat.format("Account is not blocked: {0} -> {1}", accountId, blockedAccountId));
+            }
+            log.info("Account is unblocked: {} -> {}", accountId, blockedAccountId);
+        }
     }
 
     @Override
