@@ -36,24 +36,4 @@ public interface AccountService {
 
     PageImpl<AccountDto> searchAccount (AccountSearchDto accountSearchDto, Pageable page);
 
-//    Account getAccountById(UUID accountId);
-//
-//    Account createAccount(KafkaAuthEvent kafkaAuthEvent);
-//
-//    Account updateAccount(UUID accountId, Account account);
-//
-//    void deleteAccount(UUID accountId);
-//
-//    void manageAccountBlock(UUID accountId, UUID blockedAccountId, boolean block);
-//
-//    List<UUID> getAllAccountIds();
-//
-//    List<Account> getAccountsByTheirId(List<UUID> ids, Pageable pageable);
-//
-//    List<Account> getAllAccounts(Pageable pageable);
-//
-//    Page<Account> filterBy(AccountSearchDto accountSearchDto, Pageable pageable);
-//
-//    List<Account> searchAccount (AccountSearchDto accountSearchDto);
-
 }
