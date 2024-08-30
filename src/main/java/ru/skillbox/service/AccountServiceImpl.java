@@ -52,9 +52,7 @@ public class AccountServiceImpl implements AccountService {
                     MessageFormat.format("Аккаунт с email {0} уже существует!", kafkaAuthEvent.getEmail()));
         }
         log.info("Create account by email: {}", kafkaAuthEvent.getEmail());
-        Account createdAccount = accountMapper.kafkaAuthEventToAccount(kafkaAuthEvent);
-        createdAccount.setIsDeleted(false);
-        return accountRepository.save(createdAccount);
+        return accountRepository.save(accountMapper.kafkaAuthEventToAccount(kafkaAuthEvent));
     }
 
     @Override

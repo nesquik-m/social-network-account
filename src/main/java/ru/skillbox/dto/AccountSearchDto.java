@@ -23,7 +23,7 @@ public class AccountSearchDto {
     private LocalDateTime birthDateTo;
     private String city;
     private String country;
-    private boolean isBlocked;
+//    private boolean isBlocked;
     private boolean isDeleted;
     private Integer ageTo;
     private Integer ageFrom;

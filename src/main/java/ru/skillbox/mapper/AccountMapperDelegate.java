@@ -15,6 +15,7 @@ public abstract class AccountMapperDelegate implements AccountMapper {
                 .email(kafkaAuthEvent.getEmail())
                 .firstName(kafkaAuthEvent.getFirstName())
                 .lastName(kafkaAuthEvent.getLastName())
+                .isDeleted(false)
                 .isOnline(true)
                 .createdOn(LocalDateTime.now())
                 .updatedOn(LocalDateTime.now())

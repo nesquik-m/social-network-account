@@ -47,7 +47,7 @@ public interface AccountSpecification {
                 .and(byBirthDate(asd.getBirthDateFrom(), asd.getBirthDateTo()))
                 .and(byCity(asd.getCity()))
                 .and(byCountry(asd.getCountry()))
-                .and(byBlocked(asd.isBlocked()))
+//                .and(byBlocked(asd.isBlocked()))
                 .and(byDeleted(asd.isDeleted()))
                 .and(byAge(asd.getAgeFrom(), asd.getAgeTo()))
                 ;
@@ -143,15 +143,15 @@ public interface AccountSpecification {
         };
     }
 
-    static Specification<Account> byBlocked(Boolean isBlocked) {
-        return (root, query, cb) -> {
-            if (isBlocked == null) {
-                return null;
-            }
-
-            return cb.equal(root.get("isBlocked"), isBlocked);
-        };
-    }
+//    static Specification<Account> byBlocked(Boolean isBlocked) {
+//        return (root, query, cb) -> {
+//            if (isBlocked == null) {
+//                return null;
+//            }
+//
+//            return cb.equal(root.get("isBlocked"), isBlocked);
+//        };
+//    }
 
     static Specification<Account> byDeleted(Boolean isDeleted) {
         return (root, query, cb) -> {
