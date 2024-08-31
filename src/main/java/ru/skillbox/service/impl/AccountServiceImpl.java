@@ -8,6 +8,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.skillbox.aop.LogAspect;
+import ru.skillbox.aop.LogType;
 import ru.skillbox.dto.AccountDto;
 import ru.skillbox.dto.AccountSearchDto;
 import ru.skillbox.dto.kafka.KafkaAuthEvent;
@@ -38,37 +40,40 @@ public class AccountServiceImpl implements AccountService {
     private final UUID testUUID = UUID.fromString("36296e70-76f1-42af-9272-d39732dcacb0");
 
     @Override
+    @LogAspect(type = LogType.SERVICE)
     public AccountDto getAccount() { // TODO: Security
         return accountMapper.accountToAccountDto(getAccountById(testUUID));
     }
 
     @Override
+    @LogAspect(type = LogType.SERVICE)
     public AccountDto getAccountDtoById(UUID accountId) {
-        log.info("Get account by ID: {}", accountId);
+//        log.info("Get account by ID: {}", accountId);
         return accountMapper.accountToAccountDto(getAccountById(accountId));
     }
 
-    @Override
-    public Account getAccountById(UUID accountId) {
+    private Account getAccountById(UUID accountId) {
         return accountRepository.findById(accountId)
                 .orElseThrow(() -> new AccountNotFoundException(
                         MessageFormat.format("Account not found for ID: {0}", accountId)));
     }
 
     @Override
+    @LogAspect(type = LogType.SERVICE)
     public Account createAccount(KafkaAuthEvent kafkaAuthEvent) {
         if (accountRepository.existsByEmail(kafkaAuthEvent.getEmail())) {
             throw new AlreadyExistsException(
                     MessageFormat.format("Аккаунт с email {0} уже существует!", kafkaAuthEvent.getEmail()));
         }
-        log.info("Create account by email: {}", kafkaAuthEvent.getEmail());
+//        log.info("Create account by email: {}", kafkaAuthEvent.getEmail());
         return accountRepository.save(accountMapper.kafkaAuthEventToAccount(kafkaAuthEvent));
     }
 
     @Override
     @Transactional
+    @LogAspect(type = LogType.SERVICE)
     public AccountDto updateAccount(AccountDto accountDto) { // TODO: Security
-        log.info("Update account with ID: {}", testUUID);
+//        log.info("Update account with ID: {}", testUUID);
         Account updatedAccount = getAccountById(testUUID);
         BeanUtils.copyNonNullProperties(accountMapper.accountDtoToAccount(accountDto), updatedAccount);
         updatedAccount.setUpdatedOn(LocalDateTime.now());
@@ -77,13 +82,15 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
+    @LogAspect(type = LogType.SERVICE)
     public void deleteAccount() { // TODO: Security
         accountRepository.updateDeleted(testUUID, true);
-        log.info("Delete account with ID: {}", testUUID);
+//        log.info("Delete account with ID: {}", testUUID);
     }
 
     @Override
     @Transactional
+    @LogAspect(type = LogType.SERVICE)
     public void manageAccountBlock(UUID accountId, boolean block) {  // TODO: Security (только админ)
         if (accountRepository.findById(accountId).isEmpty()) {
             throw new AccountNotFoundException(MessageFormat.format("Account not found for ID: {0}", accountId));
@@ -92,7 +99,7 @@ public class AccountServiceImpl implements AccountService {
         if (block) {
             try {
                 accountRepository.updateBlocked(accountId, true);
-                log.error("Account is blocked: {}", accountId);
+//                log.error("Account is blocked: {}", accountId);
             } catch (DataIntegrityViolationException e) {
                 throw new BadRequestException(
                         MessageFormat.format("Account is already blocked: {0}", accountId));
@@ -103,43 +110,43 @@ public class AccountServiceImpl implements AccountService {
                 throw new BadRequestException(
                         MessageFormat.format("Account is not blocked: {0}", accountId));
             }
-            log.info("Account is unblocked: {}", accountId);
+//            log.info("Account is unblocked: {}", accountId);
         }
     }
 
     @Override
+    @LogAspect(type = LogType.SERVICE)
     public List<UUID> getAllAccountIds() {
-        log.info("Get all account IDs");
         return accountRepository.findAllIds();
     }
 
     @Override
+    @LogAspect(type = LogType.SERVICE)
     public PageImpl<AccountDto> getAccountsByTheirId(List<UUID> ids, Pageable page) {
-        log.info("Get accounts by IDs");
         Page<Account> accountsPage = accountRepository.findAccountsByIds(ids, page);
         List<AccountDto> accountDtoList = accountMapper.accountListToAccountDtoList(accountsPage.getContent());
         return new PageImpl<>(accountDtoList, page, accountsPage.getTotalElements());
     }
 
     @Override
+    @LogAspect(type = LogType.SERVICE)
     public PageImpl<AccountDto> getAllAccounts(Pageable page) {
-        log.info("Get all accounts");
         Page<Account> accountsPage = accountRepository.findAll(page);
         List<AccountDto> accountDtoList = accountMapper.accountListToAccountDtoList(accountsPage.getContent());
         return new PageImpl<>(accountDtoList, page, accountsPage.getTotalElements());
     }
 
     @Override
+    @LogAspect(type = LogType.SERVICE)
     public PageImpl<AccountDto> filterBy(AccountSearchDto accountSearchDto, Pageable page) {
-        log.info("Get accounts by filter");
         Page<Account> accountsPage = accountRepository.findAll(AccountSpecification.withFilter(accountSearchDto), page);
         List<AccountDto> accountDtoList = accountMapper.accountListToAccountDtoList(accountsPage.getContent());
         return new PageImpl<>(accountDtoList, page, accountsPage.getTotalElements());
     }
 
     @Override
+    @LogAspect(type = LogType.SERVICE)
     public PageImpl<AccountDto> searchAccount(AccountSearchDto accountSearchDto, Pageable page) {
-        log.info("Search account");
         return filterBy(accountSearchDto, page);
     }
 

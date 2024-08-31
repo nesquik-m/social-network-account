@@ -17,20 +17,19 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(AccountNotFoundException.class)
     public ResponseEntity<Void> notFound(AccountNotFoundException ex) {
-        log.error("Ошибка при попытке получить аккаунт: {}", ex.getMessage());
+        log.error("ERROR: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // TODO: нужно ли возвращать объект (body() ErrorResponse)?
     }
 
     @ExceptionHandler(AlreadyExistsException.class)
     public ResponseEntity<Void> alreadyExists(AlreadyExistsException ex) {
-        log.error("Ошибка при создании аккаунта: {}", ex.getMessage());
-
+        log.error("ERROR: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<Void> badRequest(BadRequestException ex) {
-        log.error("Ошибка при выполнении запроса: {}", ex.getMessage());
+        log.error("ERROR: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
@@ -43,7 +42,7 @@ public class CustomExceptionHandler {
                 .toList();
 
         String errors = String.join("; ", errorMessages);
-        log.error("Ошибка валидации входящих данных: {}", errors);
+        log.error("ERROR: {}", errors);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // TODO: нужно ли возвращать объект (body() ErrorResponse)?
     }
 
