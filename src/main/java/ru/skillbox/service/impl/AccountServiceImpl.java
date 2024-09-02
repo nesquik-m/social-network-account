@@ -48,7 +48,6 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @LogAspect(type = LogType.SERVICE)
     public AccountDto getAccountDtoById(UUID accountId) {
-//        log.info("Get account by ID: {}", accountId);
         return accountMapper.accountToAccountDto(getAccountById(accountId));
     }
 
@@ -65,7 +64,6 @@ public class AccountServiceImpl implements AccountService {
             throw new AlreadyExistsException(
                     MessageFormat.format("Аккаунт с email {0} уже существует!", kafkaAuthEvent.getEmail()));
         }
-//        log.info("Create account by email: {}", kafkaAuthEvent.getEmail());
         return accountRepository.save(accountMapper.kafkaAuthEventToAccount(kafkaAuthEvent));
     }
 
@@ -73,7 +71,6 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @LogAspect(type = LogType.SERVICE)
     public AccountDto updateAccount(AccountDto accountDto) { // TODO: Security
-//        log.info("Update account with ID: {}", testUUID);
         Account updatedAccount = getAccountById(testUUID);
         BeanUtils.copyNonNullProperties(accountMapper.accountDtoToAccount(accountDto), updatedAccount);
         updatedAccount.setUpdatedOn(LocalDateTime.now());
@@ -85,7 +82,6 @@ public class AccountServiceImpl implements AccountService {
     @LogAspect(type = LogType.SERVICE)
     public void deleteAccount() { // TODO: Security
         accountRepository.updateDeleted(testUUID, true);
-//        log.info("Delete account with ID: {}", testUUID);
     }
 
     @Override
@@ -99,7 +95,6 @@ public class AccountServiceImpl implements AccountService {
         if (block) {
             try {
                 accountRepository.updateBlocked(accountId, true);
-//                log.error("Account is blocked: {}", accountId);
             } catch (DataIntegrityViolationException e) {
                 throw new BadRequestException(
                         MessageFormat.format("Account is already blocked: {0}", accountId));
@@ -110,7 +105,6 @@ public class AccountServiceImpl implements AccountService {
                 throw new BadRequestException(
                         MessageFormat.format("Account is not blocked: {0}", accountId));
             }
-//            log.info("Account is unblocked: {}", accountId);
         }
     }
 

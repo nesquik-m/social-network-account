@@ -7,6 +7,7 @@ import java.util.UUID;
 @Data
 public class KafkaNewAccountEvent {
 
+//    private UUID code;
     private UUID id;
     private String email;
     private String firstName;

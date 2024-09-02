@@ -2,10 +2,9 @@ package ru.skillbox.aop;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -15,11 +14,10 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @Slf4j
 public class LoggingAspect {
 
-    @Around("@annotation(logAspect)")
-    public Object logMethod(ProceedingJoinPoint joinPoint, LogAspect logAspect) throws Throwable {
+    @Before("@annotation(logAspect)")
+    public void logMethod(JoinPoint joinPoint, LogAspect logAspect) {
         String methodName = joinPoint.getSignature().getName();
         Object[] args = joinPoint.getArgs();
-        Object result = joinPoint.proceed();
 
         switch (logAspect.type()) {
             case CONTROLLER -> {
@@ -40,6 +38,5 @@ public class LoggingAspect {
                         args);
             }
         }
-        return result;
     }
 }

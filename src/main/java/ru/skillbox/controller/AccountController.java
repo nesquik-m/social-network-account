@@ -26,6 +26,7 @@ public class AccountController {
     private final AccountService accountService;
 
     @PutMapping("/recovery")
+    @LogAspect(type = LogType.CONTROLLER)
     public String accountRecovery(@RequestBody AccountRecoveryRq accountRecoveryRq) { // TODO: Security
         // TODO: Логика восстановления аккаунта: Сервис авторизации?
         return "Successfully";
