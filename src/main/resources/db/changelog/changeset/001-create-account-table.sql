@@ -1,6 +1,5 @@
 -- liquibase formatted sql
 -- changeset Anastasia Martova:create-account-table
-
 CREATE TABLE accounts (
   id UUID PRIMARY KEY,
   email VARCHAR(255),
@@ -32,4 +31,4 @@ INSERT INTO accounts (id, email, city, country, first_name, last_name, phone, ab
 ('abcdef12-3456-7890-1234-567890abcd35', 'mail8@mail.ru', '', '', 'Ruslan', 'Ruslanov', NULL, 'Опытный Java-разработчик с опытом создания высокопроизводительных и масштабируемых приложений. Опыт работы с облачными платформами, такими как AWS и Azure.', NULL, '1968-09-05', '3', false, false, true, '2024-09-05 00:00:00.000', '2024-09-05 00:00:00.000'),
 ('abcdef12-3456-7890-1234-567890abcd87', 'mail9@mail.ru', '', '', 'Egor', 'Egorov', NULL, 'Java-разработчик с фокусом на создание безопасных и надежных приложений. Опыт работы с фреймворками безопасности и лучшими практиками.', NULL, '1978-09-05', '2', false, false, true, '2024-09-05 00:00:00.000', '2024-09-05 00:00:00.000'),
 ('abcdef12-3456-7890-1234-567890abcd77', 'mail10@mail.ru', '', '', 'Victor', 'Victorov', NULL, 'Java-разработчик, увлеченный созданием инновационных и ориентированных на пользователя приложений.  Опыт работы с методологиями Agile и практиками DevOps.', NULL, '2017-09-05', '1', false, false, true, '2024-09-05 00:00:00.000', '2024-09-05 00:00:00.000'),
-('5bd73891-a00e-44e9-954c-f6610d4d1a16', 'mail@mail.ru', '', '', 'Anastasia', 'Martova', '79806372969', 'Обо мне...)', 'https://www.wallpaperflare.com/static/966/37/315/blue-purple-mountains-hexagon-wallpaper.jpg', '1959-09-05', '5', false, false, true, '2024-09-05 00:00:00.000', '2024-09-05 15:15:43.866');
+('5bd73891-a00e-44e9-954c-f6610d4d1a16', 'mail@mail.ru', '', '', 'Anastasia', 'Martova', '79806372969', 'Обо мне...)', NULL , '1959-09-05', '5', false, false, true, '2024-09-05 00:00:00.000', '2024-09-05 15:15:43.866');

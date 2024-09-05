@@ -21,7 +21,6 @@ import ru.skillbox.mapper.AccountMapper;
 import ru.skillbox.repository.AccountRepository;
 import ru.skillbox.repository.specification.AccountSpecification;
 import ru.skillbox.service.AccountService;
-import ru.skillbox.utils.BeanUtils;
 
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
@@ -91,10 +90,10 @@ public class AccountServiceImpl implements AccountService {
             updatedAccount.setCountry(accountDto.getCountry());
         }
         if (accountDto.getFirstName() != null && !accountDto.getFirstName().isEmpty()) {
-            updatedAccount.setFirstName(accountDto.getFirstName());
+            updatedAccount.setFirstName(accountDto.getFirstName().trim());
         }
         if (accountDto.getLastName() != null && !accountDto.getLastName().isEmpty()) {
-            updatedAccount.setLastName(accountDto.getLastName());
+            updatedAccount.setLastName(accountDto.getLastName().trim());
         }
         if (accountDto.getBirthDate() != null) {
             updatedAccount.setBirthDate(accountDto.getBirthDate());
@@ -108,9 +107,9 @@ public class AccountServiceImpl implements AccountService {
         if (accountDto.getAbout() != null && !accountDto.getAbout().isEmpty()) {
             updatedAccount.setAbout(accountDto.getAbout());
         }
-        if (accountDto.getProfileCover() != null && !accountDto.getProfileCover().isEmpty()) {
-            updatedAccount.setProfileCover(accountDto.getProfileCover());
-        }
+//        if (accountDto.getProfileCover() != null && !accountDto.getProfileCover().isEmpty()) {
+//            updatedAccount.setProfileCover(accountDto.getProfileCover());
+//        }
         updatedAccount.setUpdatedOn(LocalDateTime.now());
 
         return accountMapper.accountToAccountDto(accountRepository.save(updatedAccount));
