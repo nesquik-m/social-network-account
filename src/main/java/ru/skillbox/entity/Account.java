@@ -43,6 +43,9 @@ public class Account {
     @Column(name = "profile_cover")
     private String profileCover;
 
+    @Column(name = "emoji_status")
+    private String emojiStatus;
+
     // 1996-05-16 00:00:00.000
     // 2024-09-05 00:00:00.000
 

@@ -30,6 +30,7 @@ public class AccountDto {
     private String phone; // приходит так -> phone: "79806372969"
     private String about;
     private String profileCover;
+    private String emojiStatus;
 
 //    private UUID id;
 //    @NotNull(message = "Поле 'email' не должно быть пустым")

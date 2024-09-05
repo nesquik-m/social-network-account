@@ -99,6 +99,9 @@ public class AccountServiceImpl implements AccountService {
         if (accountDto.getBirthDate() != null) {
             updatedAccount.setBirthDate(accountDto.getBirthDate());
         }
+        if (accountDto.getEmojiStatus() != null) {
+            updatedAccount.setEmojiStatus(accountDto.getEmojiStatus());
+        }
         if (accountDto.getPhone() != null && !accountDto.getPhone().isEmpty()) {
             updatedAccount.setPhone(accountDto.getPhone());
         }
