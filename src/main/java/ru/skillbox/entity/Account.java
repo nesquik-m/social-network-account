@@ -37,6 +37,16 @@ public class Account {
     @Column(name = "updated_on")
     private LocalDateTime updatedOn;
 
+    private String phone;
+    private String about;
+
+    @Column(name = "profile_cover")
+    private String profileCover;
+
+    // 1996-05-16 00:00:00.000
+    // 2024-09-05 00:00:00.000
+
+
 //    @Id
 //    private UUID id;
 //    private String email;

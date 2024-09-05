@@ -47,7 +47,7 @@ public class AccountController {
         // 200 (+ объект AccountDto!), 400, 401, 404
     }
 
-    @DeleteMapping // +
+    @DeleteMapping("/me") // +
     @LogAspect(type = LogType.CONTROLLER)
     public String deleteAccount() {
         accountService.deleteAccount();

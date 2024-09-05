@@ -37,7 +37,7 @@ public class AccountServiceImpl implements AccountService {
 
     private final AccountMapper accountMapper;
 
-    private final UUID testUUID = UUID.fromString("36296e70-76f1-42af-9272-d39732dcacb0");
+    private final UUID testUUID = UUID.fromString("5bd73891-a00e-44e9-954c-f6610d4d1a16");
 
     @Override
     @LogAspect(type = LogType.SERVICE)

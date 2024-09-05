@@ -14,7 +14,7 @@ import java.util.UUID;
 public class AccountDto {
 
     private UUID id;
-    @NotNull(message = "Поле 'email' не должно быть пустым")
+//    @NotNull(message = "Поле 'email' не должно быть пустым")
     private String email;
     private String city;
     private String country;
@@ -29,7 +29,9 @@ public class AccountDto {
     private LocalDateTime createdOn;
     private LocalDateTime updatedOn;
 
-
+    private String phone; // приходит так -> phone: "79806372969"
+    private String about;
+    private String profileCover;
 
 //    private UUID id;
 //    @NotNull(message = "Поле 'email' не должно быть пустым")
