@@ -72,8 +72,44 @@ public class AccountServiceImpl implements AccountService {
     @LogAspect(type = LogType.SERVICE)
     public AccountDto updateAccount(AccountDto accountDto) { // TODO: Security
         Account updatedAccount = getAccountById(testUUID);
-        BeanUtils.copyNonNullProperties(accountMapper.accountDtoToAccount(accountDto), updatedAccount);
+
+        // BeanUtils.copyNonNullProperties(accountMapper.accountDtoToAccount(accountDto), updatedAccount);
+        // id
+        // isBlocked;
+        // isDeleted;
+        // isOnline;
+        // createdOn;
+        // updatedOn;
+
+        if (accountDto.getEmail() != null && !accountDto.getEmail().isEmpty()) {
+            updatedAccount.setEmail(accountDto.getEmail());
+        }
+        if (accountDto.getCity() != null && !accountDto.getCity().isEmpty()) {
+            updatedAccount.setCity(accountDto.getCity());
+        }
+        if (accountDto.getCountry() != null && !accountDto.getCountry().isEmpty()) {
+            updatedAccount.setCountry(accountDto.getCountry());
+        }
+        if (accountDto.getFirstName() != null && !accountDto.getFirstName().isEmpty()) {
+            updatedAccount.setFirstName(accountDto.getFirstName());
+        }
+        if (accountDto.getLastName() != null && !accountDto.getLastName().isEmpty()) {
+            updatedAccount.setLastName(accountDto.getLastName());
+        }
+        if (accountDto.getBirthDate() != null) {
+            updatedAccount.setBirthDate(accountDto.getBirthDate());
+        }
+        if (accountDto.getPhone() != null && !accountDto.getPhone().isEmpty()) {
+            updatedAccount.setPhone(accountDto.getPhone());
+        }
+        if (accountDto.getAbout() != null && !accountDto.getAbout().isEmpty()) {
+            updatedAccount.setAbout(accountDto.getAbout());
+        }
+        if (accountDto.getProfileCover() != null && !accountDto.getProfileCover().isEmpty()) {
+            updatedAccount.setProfileCover(accountDto.getProfileCover());
+        }
         updatedAccount.setUpdatedOn(LocalDateTime.now());
+
         return accountMapper.accountToAccountDto(accountRepository.save(updatedAccount));
     }
 

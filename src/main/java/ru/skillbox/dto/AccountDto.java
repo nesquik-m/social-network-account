@@ -1,9 +1,10 @@
 package ru.skillbox.dto;
 
-import jakarta.validation.constraints.NotNull;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.skillbox.mapper.LocalDateTimeDeserializer;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -14,21 +15,18 @@ import java.util.UUID;
 public class AccountDto {
 
     private UUID id;
-//    @NotNull(message = "Поле 'email' не должно быть пустым")
     private String email;
     private String city;
     private String country;
-    @NotNull(message = "Поле 'firstName' не должно быть пустым")
     private String firstName;
-    @NotNull(message = "Поле 'lastName' не должно быть пустым")
     private String lastName;
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime birthDate;
     private Boolean isBlocked;
     private Boolean isDeleted;
     private Boolean isOnline;
     private LocalDateTime createdOn;
     private LocalDateTime updatedOn;
-
     private String phone; // приходит так -> phone: "79806372969"
     private String about;
     private String profileCover;
