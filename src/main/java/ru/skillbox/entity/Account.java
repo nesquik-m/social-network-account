@@ -2,6 +2,8 @@ package ru.skillbox.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -17,40 +19,36 @@ public class Account {
 
     @Id
     private UUID id;
+    @Column(nullable = false)
     private String email;
     private String city;
     private String country;
-    @Column(name = "first_name")
+    @Column(name = "first_name", nullable = false)
     private String firstName;
-    @Column(name = "last_name")
+    @Column(name = "last_name", nullable = false)
     private String lastName;
     @Column(name = "birth_date")
     private LocalDateTime birthDate;
-    @Column(name = "blocked")
+    @Column(name = "blocked", nullable = false)
     private Boolean isBlocked;
-    @Column(name = "deleted")
+    @Column(name = "deleted", nullable = false)
     private Boolean isDeleted;
-    @Column(name = "online")
+    @Column(name = "online", nullable = false)
     private Boolean isOnline;
-    @Column(name = "created_on")
-    private LocalDateTime createdOn;
-    @Column(name = "updated_on")
-    private LocalDateTime updatedOn;
     private String phone;
     private String about;
     @Column(name = "profile_cover")
     private String profileCover;
     @Column(name = "emoji_status")
     private String emojiStatus;
-
     @Column(name = "photo")
     private String photo;
+    @CreationTimestamp
+    private LocalDateTime createdOn;
+    @UpdateTimestamp
+    private LocalDateTime updatedOn;
     @Column(name = "last_online_time")
     private LocalDateTime lastOnlineTime;
-
-    // 1996-05-16 00:00:00.000
-    // 2024-09-05 00:00:00.000
-
 
 //    @Id
 //    private UUID id;

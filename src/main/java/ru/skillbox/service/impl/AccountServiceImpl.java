@@ -24,7 +24,6 @@ import ru.skillbox.service.AccountService;
 import ru.skillbox.mapper.AccountMapper;
 
 import java.text.MessageFormat;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -56,6 +55,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @Transactional
     @LogAspect(type = LogType.SERVICE)
     public Account createAccount(KafkaAuthEvent kafkaAuthEvent) {
         if (accountRepository.existsByEmail(kafkaAuthEvent.getEmail())) {
@@ -71,7 +71,6 @@ public class AccountServiceImpl implements AccountService {
     public AccountDto updateAccount(AccountDto accountDto) { // TODO: Security
         Account updatedAccount = getAccountById(testUUID);
         AccountUpdateFactory.updateFields(updatedAccount, accountDto);
-        updatedAccount.setUpdatedOn(LocalDateTime.now());
         return AccountMapper.accountToAccountDto(accountRepository.save(updatedAccount));
     }
 
@@ -86,23 +85,9 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @LogAspect(type = LogType.SERVICE)
     public void manageAccountBlock(UUID accountId, boolean block) {  // TODO: Security (только админ)
-        if (accountRepository.findById(accountId).isEmpty()) {
+        int updated = accountRepository.updateBlocked(accountId, block);
+        if (updated == 0) {
             throw new AccountNotFoundException(MessageFormat.format("Account not found for ID: {0}", accountId));
-        }
-
-        if (block) {
-            try {
-                accountRepository.updateBlocked(accountId, true);
-            } catch (DataIntegrityViolationException e) {
-                throw new BadRequestException(
-                        MessageFormat.format("Account is already blocked: {0}", accountId));
-            }
-        } else {
-            int unblocked = accountRepository.updateBlocked(accountId, false);
-            if (unblocked == 0) {
-                throw new BadRequestException(
-                        MessageFormat.format("Account is not blocked: {0}", accountId));
-            }
         }
     }
 
