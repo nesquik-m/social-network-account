@@ -93,10 +93,9 @@ public class AccountController {
         // 200 (+ объект AccountDto), 400, 401
     }
 
-    // {{8080}}/api/v1/account/search?author=Abagael Jolliss&page=0&size=10&sort=lastName,DESC
     // {{8080}}/api/v1/account/search?author=Abagael%20Jolliss&page=0&size=10&sort=lastName,DESC
     @GetMapping("/search") // +
-    @LogAspect(type = LogType.CONTROLLER)
+    @LogAspect(type = LogType.CONTROLLER) // TODO: в firstName может прийти Имя и Фамилия (Фамилия и Имя)
     public PageImpl<AccountDto> searchAccount(@ModelAttribute AccountSearchDto dto,
                                               @PageableDefault(sort = "firstName", direction = Sort.Direction.ASC) Pageable page) {
         return accountService.searchAccount(dto, page);
