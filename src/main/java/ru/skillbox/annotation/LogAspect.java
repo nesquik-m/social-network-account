@@ -1,4 +1,6 @@
-package ru.skillbox.aop;
+package ru.skillbox.annotation;
+
+import ru.skillbox.aop.LogType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

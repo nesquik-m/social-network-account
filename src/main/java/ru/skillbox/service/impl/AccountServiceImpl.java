@@ -8,7 +8,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.skillbox.aop.LogAspect;
+import ru.skillbox.annotation.LogAspect;
 import ru.skillbox.aop.LogType;
 import ru.skillbox.dto.AccountDto;
 import ru.skillbox.dto.AccountSearchDto;
@@ -17,11 +17,10 @@ import ru.skillbox.entity.Account;
 import ru.skillbox.exception.AccountNotFoundException;
 import ru.skillbox.exception.AlreadyExistsException;
 import ru.skillbox.exception.BadRequestException;
-import ru.skillbox.mapper.AccountMapper;
 import ru.skillbox.repository.AccountRepository;
 import ru.skillbox.repository.specification.AccountSpecification;
 import ru.skillbox.service.AccountService;
-import ru.skillbox.utils.AccMapper;
+import ru.skillbox.mapper.AccountMapper;
 
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
@@ -35,22 +34,18 @@ public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
 
-    private final AccountMapper accountMapper;
-
     private final UUID testUUID = UUID.fromString("5bd73891-a00e-44e9-954c-f6610d4d1a16");
 
     @Override
     @LogAspect(type = LogType.SERVICE)
     public AccountDto getAccount() { // TODO: Security
-//        return accountMapper.accountToAccountDto(getAccountById(testUUID));
-        return AccMapper.accountToAccountDto(getAccountById(testUUID));
+        return AccountMapper.accountToAccountDto(getAccountById(testUUID));
     }
 
     @Override
     @LogAspect(type = LogType.SERVICE)
     public AccountDto getAccountDtoById(UUID accountId) {
-//        return accountMapper.accountToAccountDto(getAccountById(accountId));
-        return AccMapper.accountToAccountDto(getAccountById(accountId));
+        return AccountMapper.accountToAccountDto(getAccountById(accountId));
     }
 
     private Account getAccountById(UUID accountId) {
@@ -66,8 +61,7 @@ public class AccountServiceImpl implements AccountService {
             throw new AlreadyExistsException(
                     MessageFormat.format("Аккаунт с email {0} уже существует!", kafkaAuthEvent.getEmail()));
         }
-//        return accountRepository.save(accountMapper.kafkaAuthEventToAccount(kafkaAuthEvent));
-        return accountRepository.save(AccMapper.kafkaAuthEventToAccount(kafkaAuthEvent));
+        return accountRepository.save(AccountMapper.kafkaAuthEventToAccount(kafkaAuthEvent));
     }
 
     @Override
@@ -116,8 +110,7 @@ public class AccountServiceImpl implements AccountService {
 //        }
         updatedAccount.setUpdatedOn(LocalDateTime.now());
 
-//        return accountMapper.accountToAccountDto(accountRepository.save(updatedAccount));
-        return AccMapper.accountToAccountDto(accountRepository.save(updatedAccount));
+        return AccountMapper.accountToAccountDto(accountRepository.save(updatedAccount));
     }
 
     @Override
@@ -161,7 +154,7 @@ public class AccountServiceImpl implements AccountService {
     @LogAspect(type = LogType.SERVICE)
     public PageImpl<AccountDto> getAccountsByTheirId(List<UUID> ids, Pageable page) {
         Page<Account> accountsPage = accountRepository.findAccountsByIds(ids, page);
-        List<AccountDto> accountDtoList = accountMapper.accountListToAccountDtoList(accountsPage.getContent());
+        List<AccountDto> accountDtoList = AccountMapper.accountListToAccountDtoList(accountsPage.getContent());
         return new PageImpl<>(accountDtoList, page, accountsPage.getTotalElements());
     }
 
@@ -169,7 +162,7 @@ public class AccountServiceImpl implements AccountService {
     @LogAspect(type = LogType.SERVICE)
     public PageImpl<AccountDto> getAllAccounts(Pageable page) {
         Page<Account> accountsPage = accountRepository.findAll(page);
-        List<AccountDto> accountDtoList = accountMapper.accountListToAccountDtoList(accountsPage.getContent());
+        List<AccountDto> accountDtoList = AccountMapper.accountListToAccountDtoList(accountsPage.getContent());
         return new PageImpl<>(accountDtoList, page, accountsPage.getTotalElements());
     }
 
@@ -177,7 +170,7 @@ public class AccountServiceImpl implements AccountService {
     @LogAspect(type = LogType.SERVICE)
     public PageImpl<AccountDto> filterBy(AccountSearchDto accountSearchDto, Pageable page) {
         Page<Account> accountsPage = accountRepository.findAll(AccountSpecification.withFilter(accountSearchDto), page);
-        List<AccountDto> accountDtoList = accountMapper.accountListToAccountDtoList(accountsPage.getContent());
+        List<AccountDto> accountDtoList = AccountMapper.accountListToAccountDtoList(accountsPage.getContent());
         return new PageImpl<>(accountDtoList, page, accountsPage.getTotalElements());
     }
 

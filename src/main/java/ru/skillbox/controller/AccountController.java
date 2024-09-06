@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
-import ru.skillbox.aop.LogAspect;
+import ru.skillbox.annotation.LogAspect;
 import ru.skillbox.aop.LogType;
 import ru.skillbox.dto.AccountByFilterDto;
 import ru.skillbox.dto.AccountDto;

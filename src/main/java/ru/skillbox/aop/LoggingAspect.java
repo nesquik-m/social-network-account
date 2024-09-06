@@ -8,6 +8,7 @@ import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import ru.skillbox.annotation.LogAspect;
 
 @Aspect
 @Component
