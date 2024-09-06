@@ -21,6 +21,7 @@ import ru.skillbox.mapper.AccountMapper;
 import ru.skillbox.repository.AccountRepository;
 import ru.skillbox.repository.specification.AccountSpecification;
 import ru.skillbox.service.AccountService;
+import ru.skillbox.utils.AccMapper;
 
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
@@ -41,13 +42,15 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @LogAspect(type = LogType.SERVICE)
     public AccountDto getAccount() { // TODO: Security
-        return accountMapper.accountToAccountDto(getAccountById(testUUID));
+//        return accountMapper.accountToAccountDto(getAccountById(testUUID));
+        return AccMapper.accountToAccountDto(getAccountById(testUUID));
     }
 
     @Override
     @LogAspect(type = LogType.SERVICE)
     public AccountDto getAccountDtoById(UUID accountId) {
-        return accountMapper.accountToAccountDto(getAccountById(accountId));
+//        return accountMapper.accountToAccountDto(getAccountById(accountId));
+        return AccMapper.accountToAccountDto(getAccountById(accountId));
     }
 
     private Account getAccountById(UUID accountId) {
@@ -63,7 +66,8 @@ public class AccountServiceImpl implements AccountService {
             throw new AlreadyExistsException(
                     MessageFormat.format("Аккаунт с email {0} уже существует!", kafkaAuthEvent.getEmail()));
         }
-        return accountRepository.save(accountMapper.kafkaAuthEventToAccount(kafkaAuthEvent));
+//        return accountRepository.save(accountMapper.kafkaAuthEventToAccount(kafkaAuthEvent));
+        return accountRepository.save(AccMapper.kafkaAuthEventToAccount(kafkaAuthEvent));
     }
 
     @Override
@@ -112,7 +116,8 @@ public class AccountServiceImpl implements AccountService {
 //        }
         updatedAccount.setUpdatedOn(LocalDateTime.now());
 
-        return accountMapper.accountToAccountDto(accountRepository.save(updatedAccount));
+//        return accountMapper.accountToAccountDto(accountRepository.save(updatedAccount));
+        return AccMapper.accountToAccountDto(accountRepository.save(updatedAccount));
     }
 
     @Override

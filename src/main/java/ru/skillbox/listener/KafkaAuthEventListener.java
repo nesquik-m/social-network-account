@@ -15,6 +15,7 @@ import ru.skillbox.entity.Account;
 import ru.skillbox.exception.AlreadyExistsException;
 import ru.skillbox.mapper.AccountMapper;
 import ru.skillbox.service.AccountService;
+import ru.skillbox.utils.AccMapper;
 
 import java.util.UUID;
 
@@ -43,7 +44,8 @@ public class KafkaAuthEventListener {
 
         try {
             Account createdAccount = accountService.createAccount(kafkaAuthEvent);
-            kafkaTemplate.send(topicName, accountMapper.accountToKafkaNewAccountEvent(createdAccount));
+//            kafkaTemplate.send(topicName, accountMapper.accountToKafkaNewAccountEvent(createdAccount));
+            kafkaTemplate.send(topicName, AccMapper.accountToKafkaNewAccountEvent(createdAccount));
         } catch (AlreadyExistsException e) {
             log.info("Аккаунт с email {} уже существует. Пропускаем событие.", kafkaAuthEvent.getEmail());
         } catch (Exception e) {

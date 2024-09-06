@@ -2,6 +2,7 @@ package ru.skillbox.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.skillbox.mapper.LocalDateTimeDeserializer;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountDto {
