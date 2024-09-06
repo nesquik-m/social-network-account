@@ -46,6 +46,7 @@ public class AccountMapper {
                 .about(accountDto.getAbout())
                 .profileCover(accountDto.getProfileCover())
                 .emojiStatus(accountDto.getEmojiStatus())
+                .photo(accountDto.getPhoto())
                 .build();
     }
 
@@ -67,6 +68,7 @@ public class AccountMapper {
                 .about(account.getAbout())
                 .profileCover(account.getProfileCover())
                 .emojiStatus(account.getEmojiStatus())
+                .photo(account.getPhoto())
                 .build();
     }
 

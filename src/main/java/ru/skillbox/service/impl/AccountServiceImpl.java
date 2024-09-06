@@ -70,7 +70,6 @@ public class AccountServiceImpl implements AccountService {
     public AccountDto updateAccount(AccountDto accountDto) { // TODO: Security
         Account updatedAccount = getAccountById(testUUID);
 
-        // BeanUtils.copyNonNullProperties(accountMapper.accountDtoToAccount(accountDto), updatedAccount);
         // id
         // isBlocked;
         // isDeleted;
@@ -105,9 +104,12 @@ public class AccountServiceImpl implements AccountService {
         if (accountDto.getAbout() != null && !accountDto.getAbout().isEmpty()) {
             updatedAccount.setAbout(accountDto.getAbout());
         }
-//        if (accountDto.getProfileCover() != null && !accountDto.getProfileCover().isEmpty()) {
-//            updatedAccount.setProfileCover(accountDto.getProfileCover());
-//        }
+        if (accountDto.getPhoto() != null && !accountDto.getPhoto().isEmpty()) {
+            updatedAccount.setPhoto(accountDto.getPhoto());
+        }
+        if (accountDto.getProfileCover() != null && !accountDto.getProfileCover().isEmpty()) {
+            updatedAccount.setProfileCover(accountDto.getProfileCover());
+        }
         updatedAccount.setUpdatedOn(LocalDateTime.now());
 
         return AccountMapper.accountToAccountDto(accountRepository.save(updatedAccount));

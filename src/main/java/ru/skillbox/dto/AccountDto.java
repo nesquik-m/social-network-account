@@ -33,6 +33,7 @@ public class AccountDto {
     private String about;
     private String profileCover;
     private String emojiStatus;
+    private String photo;
 
 //    private UUID id;
 //    @NotNull(message = "Поле 'email' не должно быть пустым")
