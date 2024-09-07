@@ -6,6 +6,7 @@ import ru.skillbox.dto.kafka.KafkaAuthEvent;
 import ru.skillbox.dto.kafka.KafkaNewAccountEvent;
 import ru.skillbox.entity.Account;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -22,6 +23,7 @@ public class AccountMapper {
                 .isBlocked(false)
                 .isDeleted(false)
                 .isOnline(true)
+                .lastOnlineTime(LocalDateTime.now())
                 .build();
     }
 

@@ -12,8 +12,6 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
-import ru.skillbox.dto.kafka.KafkaAuthEvent;
-import ru.skillbox.dto.kafka.KafkaNewAccountEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,11 +22,11 @@ public class KafkaConfiguration {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
-    @Value("${app.kafka.kafkaMessageGroupId}")
+    @Value("${app.kafka.kafka-message-group-id}")
     private String kafkaMessageGroupId;
 
     @Bean
-    public ConsumerFactory<String, KafkaAuthEvent> kafkaAuthEventConsumerFactory(ObjectMapper objectMapper) {
+    public ConsumerFactory<String, Object> consumerFactory(ObjectMapper objectMapper) {
         Map<String, Object> config = new HashMap<>();
 
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
@@ -41,16 +39,16 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, KafkaAuthEvent> kafkaAuthEventConcurrentKafkaListenerContainerFactory(
-            ConsumerFactory<String, KafkaAuthEvent> kafkaAuthEventConsumerFactory) {
-        ConcurrentKafkaListenerContainerFactory<String, KafkaAuthEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(kafkaAuthEventConsumerFactory);
+    public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory(
+            ConsumerFactory<String, Object> consumerFactory) {
+        ConcurrentKafkaListenerContainerFactory<String, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory);
 
         return factory;
     }
 
     @Bean
-    public ProducerFactory<String, KafkaNewAccountEvent> kafkaNewAccountEventProducerFactory(ObjectMapper objectMapper) {
+    public ProducerFactory<String, Object> producerFactory(ObjectMapper objectMapper) {
         Map<String, Object> config = new HashMap<>();
 
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
@@ -61,8 +59,8 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public KafkaTemplate<String, KafkaNewAccountEvent> kafkaTemplate(ProducerFactory<String, KafkaNewAccountEvent> kafkaNewAccountEventProducerFactory) {
-        return new KafkaTemplate<>(kafkaNewAccountEventProducerFactory);
+    public KafkaTemplate<String, Object> kafkaTemplate(ProducerFactory<String, Object> producerFactory) {
+        return new KafkaTemplate<>(producerFactory);
     }
 
 }
