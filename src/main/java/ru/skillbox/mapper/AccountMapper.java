@@ -66,6 +66,7 @@ public class AccountMapper {
                 .profileCover(account.getProfileCover())
                 .emojiStatus(account.getEmojiStatus())
                 .photo(account.getPhoto())
+                .lastOnlineTime(account.getLastOnlineTime())
                 .build();
     }
 

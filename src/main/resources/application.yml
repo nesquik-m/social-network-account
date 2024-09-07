@@ -46,6 +46,9 @@ app:
     kafkaAuthTopic: "auth-topic"
     kafkaNewAccountTopic: "new-account-topic"
     kafkaMessageGroupId: "kafka-message-group-id"
+  scheduled:
+    interval-in-cron: "*/30 * * * * ?"
+    offline-status-minutes: 5
 
 eureka:
   client:

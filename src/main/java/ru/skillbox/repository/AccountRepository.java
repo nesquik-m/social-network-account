@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import ru.skillbox.entity.Account;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,5 +31,9 @@ public interface AccountRepository extends JpaRepository<Account, UUID>, JpaSpec
 
     @Query("SELECT a FROM Account a WHERE a.id IN :ids")
     Page<Account> findAccountsByIds(List<UUID> ids, Pageable pageable);
+
+    @Modifying
+    @Query("UPDATE Account a SET a.isOnline = false WHERE a.lastOnlineTime < :fiveMinutesAgo")
+    void updateOfflineStatus(LocalDateTime fiveMinutesAgo);
 
 }

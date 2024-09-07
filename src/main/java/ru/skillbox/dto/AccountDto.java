@@ -34,6 +34,7 @@ public class AccountDto {
     private String profileCover;
     private String emojiStatus;
     private String photo;
+    private LocalDateTime lastOnlineTime;
 
 //    private UUID id;
 //    @NotNull(message = "Поле 'email' не должно быть пустым")
