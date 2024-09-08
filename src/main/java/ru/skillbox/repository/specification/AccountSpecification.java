@@ -2,7 +2,6 @@ package ru.skillbox.repository.specification;
 
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
-import ru.skillbox.dto.AccountByFilterDto;
 import ru.skillbox.dto.AccountSearchDto;
 import ru.skillbox.entity.Account;
 
@@ -71,9 +70,13 @@ public interface AccountSpecification {
 
             String[] parts = author.split("\\s+");
             if (parts.length == 2) {
-                return cb.and(
-                        cb.equal(root.get("firstName"), parts[0].trim()),
-                        cb.equal(root.get("lastName"), parts[1].trim())
+                return cb.or(
+                        cb.and(
+                                cb.equal(root.get("firstName"), parts[0].trim()),
+                                cb.equal(root.get("lastName"), parts[1].trim())),
+                        cb.and(
+                                cb.equal(root.get("lastName"), parts[0].trim()),
+                                cb.equal(root.get("firstName"), parts[1].trim()))
                 );
             }
 
@@ -87,7 +90,9 @@ public interface AccountSpecification {
                 return null;
             }
 
-            return cb.like(root.get("firstName"), "%" + firstName + "%");
+            return firstName.split("\\s+").length == 1 ?
+                    cb.like(root.get("firstName"), "%" + firstName.trim() + "%") :
+                    byAuthor(firstName).toPredicate(root, query, cb);
         };
     }
 
@@ -97,7 +102,7 @@ public interface AccountSpecification {
                 return null;
             }
 
-            return cb.like(root.get("lastName"), "%" + lastName + "%");
+            return cb.like(root.get("lastName"), "%" + lastName.trim() + "%");
         };
     }
 
