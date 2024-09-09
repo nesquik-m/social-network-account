@@ -24,10 +24,10 @@ public class AccountUpdateFactory {
             updatedAccount.setCountry(accountDto.getCountry());
         }
         if (accountDto.getFirstName() != null && !accountDto.getFirstName().isEmpty()) {
-            updatedAccount.setFirstName(accountDto.getFirstName().trim());
+            updatedAccount.setFirstName(accountDto.getFirstName().trim().toUpperCase());
         }
         if (accountDto.getLastName() != null && !accountDto.getLastName().isEmpty()) {
-            updatedAccount.setLastName(accountDto.getLastName().trim());
+            updatedAccount.setLastName(accountDto.getLastName().trim().toUpperCase());
         }
         if (accountDto.getBirthDate() != null) {
             updatedAccount.setBirthDate(accountDto.getBirthDate());

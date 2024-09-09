@@ -74,7 +74,7 @@ public class AccountServiceImpl implements AccountService {
     public Account createAccount(KafkaAuthEvent kafkaAuthEvent) {
         if (accountRepository.existsByEmail(kafkaAuthEvent.getEmail())) {
             throw new AlreadyExistsException(
-                    MessageFormat.format("Аккаунт с email {0} уже существует!", kafkaAuthEvent.getEmail()));
+                    MessageFormat.format("An account with email {0} already exists!", kafkaAuthEvent.getEmail()));
         }
         return accountRepository.save(AccountMapper.kafkaAuthEventToAccount(kafkaAuthEvent));
     }

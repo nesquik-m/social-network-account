@@ -91,8 +91,8 @@ public interface AccountSpecification {
             }
 
             return firstName.split("\\s+").length == 1 ?
-                    cb.like(root.get("firstName"), "%" + firstName.trim() + "%") :
-                    byAuthor(firstName).toPredicate(root, query, cb);
+                    cb.like(root.get("firstName"), "%" + firstName.trim().toUpperCase() + "%") :
+                    byAuthor(firstName.toUpperCase()).toPredicate(root, query, cb);
         };
     }
 
@@ -102,7 +102,7 @@ public interface AccountSpecification {
                 return null;
             }
 
-            return cb.like(root.get("lastName"), "%" + lastName.trim() + "%");
+            return cb.like(root.get("lastName"), "%" + lastName.trim().toUpperCase() + "%");
         };
     }
 
