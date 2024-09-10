@@ -2,7 +2,7 @@
 #  port: 0
 
 server:
-  port: 8082
+  port: 0
 
 spring:
   application:
@@ -55,5 +55,5 @@ eureka:
   client:
     enabled: true
     service-url:
-#      defaultZone: http://localhost:8761/eureka
-      defaultZone: http://89.111.174.153:8761/eureka/
+      defaultZone: http://localhost:8761/eureka/
+#      defaultZone: http://89.111.174.153:8761/eureka/
