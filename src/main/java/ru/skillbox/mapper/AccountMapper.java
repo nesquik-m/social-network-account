@@ -16,7 +16,7 @@ public class AccountMapper {
 
     public Account kafkaAuthEventToAccount(KafkaAuthEvent kafkaAuthEvent) {
         return Account.builder()
-                .id(UUID.randomUUID())
+                .id(kafkaAuthEvent.getUuid())
                 .email(kafkaAuthEvent.getEmail())
                 .firstName(kafkaAuthEvent.getFirstName().trim().toUpperCase())
                 .lastName(kafkaAuthEvent.getLastName().trim().toUpperCase())
