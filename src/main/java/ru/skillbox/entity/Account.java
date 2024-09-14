@@ -6,6 +6,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -49,6 +51,10 @@ public class Account {
     private LocalDateTime updatedOn;
     @Column(name = "last_online_time")
     private LocalDateTime lastOnlineTime;
+
+    @Transient
+    @Builder.Default
+    private Set<RoleType> roles = new HashSet<>();
 
 //    @Id
 //    private UUID id;

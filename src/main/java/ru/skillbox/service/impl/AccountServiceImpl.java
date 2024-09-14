@@ -62,7 +62,7 @@ public class AccountServiceImpl implements AccountService {
         return AccountMapper.accountToAccountDto(getAccountById(accountId));
     }
 
-    private Account getAccountById(UUID accountId) {
+    public Account getAccountById(UUID accountId) {
         return accountRepository.findById(accountId)
                 .orElseThrow(() -> new AccountNotFoundException(
                         MessageFormat.format("Account not found for ID: {0}", accountId)));
