@@ -29,11 +29,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
 
-//    private final UserDetailsServiceImpl userDetailsService;
-
-//    private final UUID testUUID = UUID.fromString("3c3925ea-3c3b-4361-96df-d6eb98c072d0");
-
-//    private final AccountRepository accountRepository;
     private final AccountService accountService;
 
 
@@ -46,37 +41,29 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 System.out.println("ТОКЕН: " + jwtToken);
 
                 String id = jwtUtils.getUUIDFromToken(jwtToken);
-                System.out.println(id);
-
                 List<RoleType> roles = jwtUtils.getRolesFromToken(jwtToken);
-                System.out.println(roles);
 
                 Account account = accountService.getAccountById(UUID.fromString(id));
                 account.setRoles(roles);
-                System.out.println(account);
 
                 UserDetails userDetails = new AppUserDetails(account);
-
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,
                         null, userDetails.getAuthorities());
-
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception e) {
             log.error("Cannot set account authentication: {}", e.getMessage());
         }
 
-        filterChain.doFilter(request, response); // проталкивание запроса дальше по конвейеру
+        filterChain.doFilter(request, response);
     }
 
     private String getToken(HttpServletRequest request) {
         String headerAuth = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-            return headerAuth.substring(7); // Первые 7 символов
+            return headerAuth.substring(7);
         }
         return null;
     }
-
 }

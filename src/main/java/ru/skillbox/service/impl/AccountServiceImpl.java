@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,9 +19,11 @@ import ru.skillbox.dto.kafka.KafkaAuthEvent;
 import ru.skillbox.entity.Account;
 import ru.skillbox.exception.AccountNotFoundException;
 import ru.skillbox.exception.AlreadyExistsException;
+import ru.skillbox.exception.BadRequestException;
 import ru.skillbox.mapper.AccountUpdateFactory;
 import ru.skillbox.repository.AccountRepository;
 import ru.skillbox.repository.specification.AccountSpecification;
+import ru.skillbox.security.AppUserDetails;
 import ru.skillbox.service.AccountService;
 import ru.skillbox.mapper.AccountMapper;
 
@@ -49,12 +52,23 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @LogAspect(type = LogType.SERVICE)
     public AccountDto getAccount() { // TODO: Security
-        Account account = getAccountById(testUUID);
+        Account account = getAccountById(getUUIDFromSecurityContext());
         account.setIsOnline(true); // TODO: test. вынести в кафку
         account.setLastOnlineTime(LocalDateTime.now()); // TODO: test. вынести в кафку
         accountRepository.save(account);
         return AccountMapper.accountToAccountDto(account);
     }
+
+    private UUID getUUIDFromSecurityContext() {
+        var currentPrincipal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (currentPrincipal instanceof AppUserDetails userDetails) {
+            System.out.println(">> " + userDetails.getId());
+            return userDetails.getId();
+        }
+//        return null;
+        throw new BadRequestException("Account id is null!");
+    }
+
 
     @Override
     @LogAspect(type = LogType.SERVICE)
@@ -64,6 +78,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account getAccountById(UUID accountId) {
+//        if (accountId == null) {
+//            throw new BadRequestException("Account id is null!");
+//        }
         return accountRepository.findById(accountId)
                 .orElseThrow(() -> new AccountNotFoundException(
                         MessageFormat.format("Account not found for ID: {0}", accountId)));

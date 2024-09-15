@@ -49,12 +49,7 @@ public class Account {
     private LocalDateTime updatedOn;
     @Column(name = "last_online_time")
     private LocalDateTime lastOnlineTime;
-
-    //    @Transient
-//    @Builder.Default
-//    private Set<RoleType> roles = new HashSet<>();
     @Transient
-//    @Enumerated(EnumType.STRING)
     @Builder.Default
     private List<RoleType> roles = new ArrayList<>();
 

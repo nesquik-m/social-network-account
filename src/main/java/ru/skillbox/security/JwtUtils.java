@@ -41,9 +41,6 @@ public class JwtUtils {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-//        for (Map.Entry<String, Object> entry : claims.entrySet()) {
-//            System.out.println(entry.getKey() + ": " + entry.getValue());
-//        }
         return claims;
     }
 
@@ -51,21 +48,10 @@ public class JwtUtils {
         return (String) getClaimsFromToken(token).get("id");
     }
 
-    //    public Set<RoleType> getRolesFromToken(String token) {
-//        List<RoleType> roles = (List<RoleType>) getClaimsFromToken(token).get("roles");
-//        return new HashSet<>(roles);
-//    }
-//    public List<RoleType> getRolesFromToken(String token) {
-//        return (List<RoleType>) getClaimsFromToken(token).get("roles");
-//    }
-
     public List<RoleType> getRolesFromToken(String token) {
-        // Получаем список ролей из токена
         List<String> rolesAsString = (List<String>) getClaimsFromToken(token).get("roles");
-
-        // Преобразуем список строк в список RoleType
         return rolesAsString.stream()
-                .map(RoleType::valueOf) // Преобразование строки в RoleType
+                .map(RoleType::valueOf)
                 .collect(Collectors.toList());
     }
 }
