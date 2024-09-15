@@ -38,7 +38,7 @@ public class AccountServiceImpl implements AccountService {
     @Value("${app.scheduled.offline-status-minutes}")
     private int offlineStatusMinutes;
 
-    private final UUID testUUID = UUID.fromString("5bd73891-a00e-44e9-954c-f6610d4d1a16");
+    private final UUID testUUID = UUID.fromString("3c3925ea-3c3b-4361-96df-d6eb98c072d0");
 
 //    @Override
 //    @LogAspect(type = LogType.SERVICE)
@@ -62,6 +62,7 @@ public class AccountServiceImpl implements AccountService {
         return AccountMapper.accountToAccountDto(getAccountById(accountId));
     }
 
+    @Override
     public Account getAccountById(UUID accountId) {
         return accountRepository.findById(accountId)
                 .orElseThrow(() -> new AccountNotFoundException(

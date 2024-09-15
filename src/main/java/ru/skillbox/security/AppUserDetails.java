@@ -18,10 +18,6 @@ public class AppUserDetails implements UserDetails {
         return account.getId();
     }
 
-//    public String getEmail() {
-//        return account.getEmail();
-//    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return account.getRoles().stream()

@@ -14,7 +14,7 @@ public interface AccountService {
 
     AccountDto getAccount();
 
-//    Account getAccountById(UUID accountId);
+    Account getAccountById(UUID accountId);
 
     AccountDto getAccountDtoById(UUID accountId);
 
