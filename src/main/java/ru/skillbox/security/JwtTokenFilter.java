@@ -10,43 +10,34 @@ import org.apache.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import ru.skillbox.entity.Account;
-import ru.skillbox.entity.RoleType;
-import ru.skillbox.service.AccountService;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @Slf4j
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
 
-    private final JwtUtils jwtUtils;
+    private final JwtUtils jwtUtils; // TODO: здесь заменить на OpenFeign
 
-    private final AccountService accountService;
+    private final UserDetailsService userDetailsService;
 
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            String jwtToken = getToken(request);
+            String token = getToken(request);
 
-            if (jwtToken != null && jwtUtils.validateToken(jwtToken)) {
-                System.out.println("ТОКЕН: " + jwtToken);
+            if (token != null && jwtUtils.validateToken(token)) {
+                System.out.println("ТОКЕН: " + token);
 
-                String id = jwtUtils.getUUIDFromToken(jwtToken);
-                List<RoleType> roles = jwtUtils.getRolesFromToken(jwtToken);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(token);
 
-                Account account = accountService.getAccountById(UUID.fromString(id));
-                account.setRoles(roles);
-
-                UserDetails userDetails = new AppUserDetails(account);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,
                         null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

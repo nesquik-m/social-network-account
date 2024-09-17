@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +24,6 @@ import ru.skillbox.exception.BadRequestException;
 import ru.skillbox.mapper.AccountUpdateFactory;
 import ru.skillbox.repository.AccountRepository;
 import ru.skillbox.repository.specification.AccountSpecification;
-import ru.skillbox.security.AppUserDetails;
 import ru.skillbox.service.AccountService;
 import ru.skillbox.mapper.AccountMapper;
 
@@ -53,6 +53,7 @@ public class AccountServiceImpl implements AccountService {
     @LogAspect(type = LogType.SERVICE)
     public AccountDto getAccount() { // TODO: Security
         Account account = getAccountById(getUUIDFromSecurityContext());
+//        Account account = getAccountById(testUUID);
         account.setIsOnline(true); // TODO: test. вынести в кафку
         account.setLastOnlineTime(LocalDateTime.now()); // TODO: test. вынести в кафку
         accountRepository.save(account);
@@ -61,14 +62,11 @@ public class AccountServiceImpl implements AccountService {
 
     private UUID getUUIDFromSecurityContext() {
         var currentPrincipal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (currentPrincipal instanceof AppUserDetails userDetails) {
-            System.out.println(">> " + userDetails.getId());
-            return userDetails.getId();
+        if (currentPrincipal instanceof User user) {
+            return UUID.fromString(user.getUsername());
         }
-//        return null;
         throw new BadRequestException("Account id is null!");
     }
-
 
     @Override
     @LogAspect(type = LogType.SERVICE)
@@ -101,7 +99,8 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @LogAspect(type = LogType.SERVICE)
     public AccountDto updateAccount(AccountDto accountDto) { // TODO: Security
-        Account updatedAccount = getAccountById(testUUID);
+//        Account updatedAccount = getAccountById(testUUID);
+        Account updatedAccount = getAccountById(getUUIDFromSecurityContext());
         AccountUpdateFactory.updateFields(updatedAccount, accountDto);
         return AccountMapper.accountToAccountDto(accountRepository.save(updatedAccount));
     }
