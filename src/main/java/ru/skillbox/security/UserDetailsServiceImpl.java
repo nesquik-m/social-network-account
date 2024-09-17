@@ -1,6 +1,7 @@
 package ru.skillbox.security;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,10 +14,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final JwtUtils jwtUtils;
 
+    @SneakyThrows
     @Override
     public UserDetails loadUserByUsername(String token) {
         return new User(
-                jwtUtils.getUUIDFromToken(token),
+                jwtUtils.getIdFromToken(token),
                 "password",
                 true,
                 true,
