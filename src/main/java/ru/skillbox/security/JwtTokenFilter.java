@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import ru.skillbox.client.OpenFeignClient;
 
 import java.io.IOException;
 
@@ -23,17 +24,18 @@ import java.io.IOException;
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
 
-    private final JwtUtils jwtUtils; // TODO: здесь заменить на OpenFeign
+    private final OpenFeignClient openFeignClient;
 
     private final UserDetailsService userDetailsService;
-
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String token = getToken(request);
 
-            if (token != null && jwtUtils.validateToken(token)) {
+            if (token != null) { // TODO: здесь добавить проверку через OpenFeign, см. ниже
+//            if (token != null
+//                    && openFeignClient.validateToken(request.getHeader(HttpHeaders.AUTHORIZATION)).isValid()) {
                 System.out.println("ТОКЕН: " + token);
 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(token);

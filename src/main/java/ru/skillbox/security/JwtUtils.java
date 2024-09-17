@@ -13,17 +13,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class JwtUtils {
 
-    public boolean validateToken(String token) {
-        // TODO This is a stub!!!
-        // Must be something like this:
-        //    return restTemplate.exchange(".../api/v1/auth/confirmtoken?token={}",
-        //          HttpMethod.GET,
-        //          null,
-        //          Boolean.class,
-        //          token).getBody();
-        return true;
-    }
-
     public String getIdFromToken(String token) throws ParseException {
         return SignedJWT.parse(token).getPayload().toJSONObject().get("id").toString();
     }
