@@ -41,13 +41,7 @@ public class AccountServiceImpl implements AccountService {
     @Value("${app.scheduled.offline-status-minutes}")
     private int offlineStatusMinutes;
 
-    private final UUID testUUID = UUID.fromString("3c3925ea-3c3b-4361-96df-d6eb98c072d0");
-
-//    @Override
-//    @LogAspect(type = LogType.SERVICE)
-//    public AccountDto getAccount() { // TODO: Security
-//        return AccountMapper.accountToAccountDto(getAccountById(testUUID));
-//    }
+//    private final UUID testUUID = UUID.fromString("3c3925ea-3c3b-4361-96df-d6eb98c072d0");
 
     @Override
     @LogAspect(type = LogType.SERVICE)
@@ -60,14 +54,6 @@ public class AccountServiceImpl implements AccountService {
         return AccountMapper.accountToAccountDto(account);
     }
 
-    private UUID getUUIDFromSecurityContext() {
-        var currentPrincipal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (currentPrincipal instanceof User user) {
-            return UUID.fromString(user.getUsername());
-        }
-        throw new BadRequestException("Account id is null!");
-    }
-
     @Override
     @LogAspect(type = LogType.SERVICE)
     public AccountDto getAccountDtoById(UUID accountId) {
@@ -76,9 +62,6 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account getAccountById(UUID accountId) {
-//        if (accountId == null) {
-//            throw new BadRequestException("Account id is null!");
-//        }
         return accountRepository.findById(accountId)
                 .orElseThrow(() -> new AccountNotFoundException(
                         MessageFormat.format("Account not found for ID: {0}", accountId)));
@@ -109,7 +92,7 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @LogAspect(type = LogType.SERVICE)
     public void deleteAccount() { // TODO: Security
-        accountRepository.updateDeleted(testUUID, true);
+        accountRepository.updateDeleted(getUUIDFromSecurityContext(), true);
     }
 
     @Override
@@ -167,4 +150,13 @@ public class AccountServiceImpl implements AccountService {
             log.error("Error updating offline status: {}", e.getMessage(), e);
         }
     }
+
+    private UUID getUUIDFromSecurityContext() {
+        var currentPrincipal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (currentPrincipal instanceof User user) {
+            return UUID.fromString(user.getUsername());
+        }
+        throw new BadRequestException("Account id is null!");
+    }
+
 }
