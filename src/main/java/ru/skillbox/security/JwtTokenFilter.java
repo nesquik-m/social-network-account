@@ -12,7 +12,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -38,19 +37,17 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             String token = getToken(request);
             if (token != null && openFeignClient.validateToken(token).isValid()) {
 
-                UserDetails userDetails = new User(
-                        getIdFromToken(token),
-                        "password",
-                        true,
-                        true,
-                        true,
-                        true,
-                        getRolesFromToken(token).stream()
-                                .map(r -> new SimpleGrantedAuthority(r.name())).toList()
+                String accountId = getIdFromToken(token);
+                List<SimpleGrantedAuthority> authorities = getRolesFromToken(token).stream()
+                        .map(r -> new SimpleGrantedAuthority(r.name()))
+                        .toList();
+
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        new User(accountId, "", authorities),
+                        null,
+                        authorities
                 );
 
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,
-                        null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
