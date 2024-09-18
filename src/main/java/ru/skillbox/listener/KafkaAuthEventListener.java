@@ -60,7 +60,6 @@ public class KafkaAuthEventListener {
                                 @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
                                 @Header(KafkaHeaders.RECEIVED_PARTITION) Integer partition,
                                 @Header(KafkaHeaders.RECEIVED_TIMESTAMP) Long timestamp) {
-
         try {
             accountRepository.updateOnlineStatus(kafkaActionEvent.getId());
         } catch (Exception e) {

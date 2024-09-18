@@ -47,10 +47,6 @@ public class AccountServiceImpl implements AccountService {
     @LogAspect(type = LogType.SERVICE)
     public AccountDto getAccount() { // TODO: Security
         Account account = getAccountById(getUUIDFromSecurityContext());
-//        Account account = getAccountById(testUUID);
-        account.setIsOnline(true); // TODO: test. вынести в кафку
-        account.setLastOnlineTime(LocalDateTime.now()); // TODO: test. вынести в кафку
-        accountRepository.save(account);
         return AccountMapper.accountToAccountDto(account);
     }
 

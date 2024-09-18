@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.skillbox.client.OpenFeignClient;
+import ru.skillbox.client.ValidTokenResponse;
 
 import java.io.IOException;
 
@@ -32,14 +33,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String token = getToken(request);
-
-            if (token != null) { // TODO: здесь добавить проверку через OpenFeign, см. ниже
-//            if (token != null
-//                    && openFeignClient.validateToken(request.getHeader(HttpHeaders.AUTHORIZATION)).isValid()) {
+            if (token != null && openFeignClient.validateToken(request.getHeader(HttpHeaders.AUTHORIZATION)).isValid()) {
                 System.out.println("ТОКЕН: " + token);
-
                 UserDetails userDetails = userDetailsService.loadUserByUsername(token);
-
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,
                         null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -48,7 +44,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             log.error("Cannot set account authentication: {}", e.getMessage());
         }
-
         filterChain.doFilter(request, response);
     }
 
