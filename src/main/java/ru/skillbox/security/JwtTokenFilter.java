@@ -1,5 +1,6 @@
 package ru.skillbox.security;
 
+import com.nimbusds.jwt.SignedJWT;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,17 +9,21 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ru.skillbox.client.OpenFeignClient;
-import ru.skillbox.client.ValidTokenResponse;
+import ru.skillbox.entity.RoleType;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -27,15 +32,23 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final OpenFeignClient openFeignClient;
 
-    private final UserDetailsService userDetailsService;
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String token = getToken(request);
-            if (token != null && openFeignClient.validateToken(request.getHeader(HttpHeaders.AUTHORIZATION)).isValid()) {
-                System.out.println("ТОКЕН: " + token);
-                UserDetails userDetails = userDetailsService.loadUserByUsername(token);
+            if (token != null && openFeignClient.validateToken(token).isValid()) {
+
+                UserDetails userDetails = new User(
+                        getIdFromToken(token),
+                        "password",
+                        true,
+                        true,
+                        true,
+                        true,
+                        getRolesFromToken(token).stream()
+                                .map(r -> new SimpleGrantedAuthority(r.name())).toList()
+                );
+
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,
                         null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -54,4 +67,16 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         }
         return null;
     }
+
+    private String getIdFromToken(String token) throws ParseException {
+        return SignedJWT.parse(token).getPayload().toJSONObject().get("id").toString();
+    }
+
+    private List<RoleType> getRolesFromToken(String token) throws ParseException {
+        List<String> roles = (List<String>) SignedJWT.parse(token).getPayload().toJSONObject().get("roles");
+        return roles.stream()
+                .map(RoleType::valueOf)
+                .collect(Collectors.toList());
+    }
+
 }
