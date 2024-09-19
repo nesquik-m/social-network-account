@@ -38,14 +38,13 @@ import java.util.UUID;
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
+
     @Value("${app.scheduled.offline-status-minutes}")
     private int offlineStatusMinutes;
 
-//    private final UUID testUUID = UUID.fromString("3c3925ea-3c3b-4361-96df-d6eb98c072d0");
-
     @Override
     @LogAspect(type = LogType.SERVICE)
-    public AccountDto getAccount() { // TODO: Security
+    public AccountDto getAccount() { // TODO: Security +
         Account account = getAccountById(getUUIDFromSecurityContext());
         return AccountMapper.accountToAccountDto(account);
     }
@@ -77,8 +76,8 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     @LogAspect(type = LogType.SERVICE)
-    public AccountDto updateAccount(AccountDto accountDto) { // TODO: Security
-//        Account updatedAccount = getAccountById(testUUID);
+    public AccountDto updateAccount(AccountDto accountDto) { // TODO: Security +
+        accountDto.setPhone(formatPhoneNumber(accountDto.getPhone()));
         Account updatedAccount = getAccountById(getUUIDFromSecurityContext());
         AccountUpdateFactory.updateFields(updatedAccount, accountDto);
         return AccountMapper.accountToAccountDto(accountRepository.save(updatedAccount));
@@ -153,6 +152,16 @@ public class AccountServiceImpl implements AccountService {
             return UUID.fromString(user.getUsername());
         }
         throw new BadRequestException("Account id is null!");
+    }
+
+    private String formatPhoneNumber(String phone) {
+        if (phone.length() == 10) {
+            return "7" + phone;
+        } else if (phone.length() == 11 && phone.startsWith("7")) {
+            return phone;
+        } else {
+            return null;
+        }
     }
 
 }
