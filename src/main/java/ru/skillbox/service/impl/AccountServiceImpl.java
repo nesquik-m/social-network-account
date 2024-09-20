@@ -86,7 +86,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     @LogAspect(type = LogType.SERVICE)
-    public void deleteAccount() { // TODO: Security
+    public void deleteAccount() { // TODO: Security. И менять статус на offline, т.к. сразу происходит logout
         accountRepository.updateDeleted(getUUIDFromSecurityContext(), true);
     }
 

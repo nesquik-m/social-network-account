@@ -35,7 +35,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String token = getToken(request);
-            if (token != null && openFeignClient.validateToken(token).isValid()) {
+            if (token != null && openFeignClient.validateToken(request.getHeader(HttpHeaders.AUTHORIZATION)).isValid()) {
 
                 String accountId = getIdFromToken(token);
                 List<SimpleGrantedAuthority> authorities = getRolesFromToken(token).stream()
