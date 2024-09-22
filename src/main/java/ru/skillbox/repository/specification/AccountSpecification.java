@@ -4,6 +4,7 @@ import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 import ru.skillbox.dto.AccountSearchDto;
 import ru.skillbox.entity.Account;
+import ru.skillbox.security.SecurityUtils;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -49,7 +50,8 @@ public interface AccountSpecification {
                 .and(byBlocked(asd.isBlocked()))
                 .and(byDeleted(asd.isDeleted()))
                 .and(byAge(asd.getAgeFrom(), asd.getAgeTo()))
-                ;
+                .and(excludeCurrentAccount())
+        ;
     }
 
     static Specification<Account> byIds(List<UUID> ids) {
@@ -193,5 +195,11 @@ public interface AccountSpecification {
                     Timestamp.valueOf(birthDateTo.atStartOfDay()));
         };
     }
+
+    static Specification<Account> excludeCurrentAccount() {
+        UUID currentAccountId = SecurityUtils.getUUIDFromSecurityContext();
+        return (root, query, cb) -> cb.notEqual(root.get("id"), currentAccountId);
+    }
+
 }
 
