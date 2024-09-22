@@ -8,8 +8,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,10 +20,10 @@ import ru.skillbox.dto.kafka.KafkaDeletedAccountEvent;
 import ru.skillbox.entity.Account;
 import ru.skillbox.exception.AccountNotFoundException;
 import ru.skillbox.exception.AlreadyExistsException;
-import ru.skillbox.exception.BadRequestException;
 import ru.skillbox.mapper.AccountUpdateFactory;
 import ru.skillbox.repository.AccountRepository;
 import ru.skillbox.repository.specification.AccountSpecification;
+import ru.skillbox.security.SecurityUtils;
 import ru.skillbox.service.AccountService;
 import ru.skillbox.mapper.AccountMapper;
 
@@ -41,18 +39,18 @@ public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
 
+    private final KafkaTemplate<String, Object> kafkaTemplate;
+
     @Value("${app.scheduled.offline-status-minutes}")
     private int offlineStatusMinutes;
 
     @Value("${app.kafka.kafka-producer-deleted-account-topic}")
     private String topicName;
 
-    private final KafkaTemplate<String, Object> kafkaTemplate;
-
     @Override
     @LogAspect(type = LogType.SERVICE)
     public AccountDto getAccount() {
-        Account account = getAccountById(getUUIDFromSecurityContext());
+        Account account = getAccountById(SecurityUtils.getUUIDFromSecurityContext());
         return AccountMapper.accountToAccountDto(account);
     }
 
@@ -84,8 +82,7 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @LogAspect(type = LogType.SERVICE)
     public AccountDto updateAccount(AccountDto accountDto) {
-        accountDto.setPhone(formatPhoneNumber(accountDto.getPhone()));
-        Account updatedAccount = getAccountById(getUUIDFromSecurityContext());
+        Account updatedAccount = getAccountById(SecurityUtils.getUUIDFromSecurityContext());
         AccountUpdateFactory.updateFields(updatedAccount, accountDto);
         return AccountMapper.accountToAccountDto(accountRepository.save(updatedAccount));
     }
@@ -94,7 +91,7 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @LogAspect(type = LogType.SERVICE)
     public void deleteAccount() {
-        UUID accountId = getUUIDFromSecurityContext();
+        UUID accountId = SecurityUtils.getUUIDFromSecurityContext();
         accountRepository.updateDeleted(accountId, true);
         kafkaTemplate.send(topicName, new KafkaDeletedAccountEvent(accountId));
     }
@@ -152,24 +149,6 @@ public class AccountServiceImpl implements AccountService {
             accountRepository.updateOfflineStatus(LocalDateTime.now().minusMinutes(offlineStatusMinutes));
         } catch (InvalidDataAccessApiUsageException e) {
             log.error("Error updating offline status: {}", e.getMessage(), e);
-        }
-    }
-
-    private UUID getUUIDFromSecurityContext() {
-        var currentPrincipal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (currentPrincipal instanceof User user) {
-            return UUID.fromString(user.getUsername());
-        }
-        throw new BadRequestException("Account id is null!");
-    }
-
-    private String formatPhoneNumber(String phone) {
-        if (phone.length() == 10) {
-            return "7" + phone;
-        } else if (phone.length() == 11 && phone.startsWith("7")) {
-            return phone;
-        } else {
-            return null;
         }
     }
 
