@@ -24,7 +24,7 @@ public interface AccountRepository extends JpaRepository<Account, UUID>, JpaSpec
     int updateBlocked(UUID accountId, boolean blocked);
 
     @Modifying
-    @Query("UPDATE Account a SET a.isDeleted = :deleted, a.updatedOn = CURRENT_TIMESTAMP WHERE a.id = :accountId")
+    @Query("UPDATE Account a SET a.isDeleted = :deleted, a.updatedOn = CURRENT_TIMESTAMP, a.isOnline = false WHERE a.id = :accountId")
     void updateDeleted(UUID accountId, boolean deleted);
 
     @Query("SELECT a.id FROM Account a")

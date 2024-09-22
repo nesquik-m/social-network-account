@@ -33,6 +33,7 @@ app:
     kafka-consumer-auth-topic: "auth-topic"
     kafka-consumer-action-topic: "action-topic"
     kafka-producer-new-account-topic: "new-account-topic"
+    kafka-producer-deleted-account-topic: "deleted-account-topic"
     kafka-message-group-id: "kafka-message-group-id"
   scheduled:
     interval-in-cron: "*/30 * * * * ?"

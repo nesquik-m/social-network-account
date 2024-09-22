@@ -6,6 +6,7 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -17,6 +18,7 @@ import ru.skillbox.aop.LogType;
 import ru.skillbox.dto.AccountDto;
 import ru.skillbox.dto.AccountSearchDto;
 import ru.skillbox.dto.kafka.KafkaAuthEvent;
+import ru.skillbox.dto.kafka.KafkaDeletedAccountEvent;
 import ru.skillbox.entity.Account;
 import ru.skillbox.exception.AccountNotFoundException;
 import ru.skillbox.exception.AlreadyExistsException;
@@ -42,9 +44,14 @@ public class AccountServiceImpl implements AccountService {
     @Value("${app.scheduled.offline-status-minutes}")
     private int offlineStatusMinutes;
 
+    @Value("${app.kafka.kafka-producer-deleted-account-topic}")
+    private String topicName;
+
+    private final KafkaTemplate<String, Object> kafkaTemplate;
+
     @Override
     @LogAspect(type = LogType.SERVICE)
-    public AccountDto getAccount() { // TODO: Security +
+    public AccountDto getAccount() {
         Account account = getAccountById(getUUIDFromSecurityContext());
         return AccountMapper.accountToAccountDto(account);
     }
@@ -76,7 +83,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     @LogAspect(type = LogType.SERVICE)
-    public AccountDto updateAccount(AccountDto accountDto) { // TODO: Security +
+    public AccountDto updateAccount(AccountDto accountDto) {
         accountDto.setPhone(formatPhoneNumber(accountDto.getPhone()));
         Account updatedAccount = getAccountById(getUUIDFromSecurityContext());
         AccountUpdateFactory.updateFields(updatedAccount, accountDto);
@@ -86,14 +93,16 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     @LogAspect(type = LogType.SERVICE)
-    public void deleteAccount() { // TODO: Security. И менять статус на offline, т.к. сразу происходит logout
-        accountRepository.updateDeleted(getUUIDFromSecurityContext(), true);
+    public void deleteAccount() {
+        UUID accountId = getUUIDFromSecurityContext();
+        accountRepository.updateDeleted(accountId, true);
+        kafkaTemplate.send(topicName, new KafkaDeletedAccountEvent(accountId));
     }
 
     @Override
     @Transactional
     @LogAspect(type = LogType.SERVICE)
-    public void manageAccountBlock(UUID accountId, boolean block) {  // TODO: Security (только админ)
+    public void manageAccountBlock(UUID accountId, boolean block) {
         int updated = accountRepository.updateBlocked(accountId, block);
         if (updated == 0) {
             throw new AccountNotFoundException(MessageFormat.format("Account not found for ID: {0}", accountId));

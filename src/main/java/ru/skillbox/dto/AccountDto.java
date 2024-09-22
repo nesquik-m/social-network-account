@@ -16,12 +16,12 @@ import java.util.UUID;
 @AllArgsConstructor
 public class AccountDto {
 
-    private UUID id;
-    private String email;
+    private UUID id; // Valid?
+    private String email; // Valid?
     private String city;
     private String country;
-    private String firstName;
-    private String lastName;
+    private String firstName; // Valid?
+    private String lastName; // Valid?
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime birthDate;
     private Boolean isBlocked;
@@ -35,9 +35,5 @@ public class AccountDto {
     private String emojiStatus;
     private String photo;
     private LocalDateTime lastOnlineTime;
-
-//    private String messagePermission;
-//    private String photoId;
-//    private String photoName;
 
 }
