@@ -71,14 +71,20 @@ public interface AccountSpecification {
             }
 
             String[] parts = author.split("\\s+");
+
+            if (parts.length == 1) {
+                return byFirstName(author.toUpperCase()).toPredicate(root, query, cb);
+            }
+
+
             if (parts.length == 2) {
                 return cb.or(
                         cb.and(
-                                cb.equal(root.get("firstName"), parts[0].trim()),
-                                cb.equal(root.get("lastName"), parts[1].trim())),
+                                cb.equal(root.get("firstName"), parts[0].trim().toUpperCase()),
+                                cb.equal(root.get("lastName"), parts[1].trim().toUpperCase())),
                         cb.and(
-                                cb.equal(root.get("lastName"), parts[0].trim()),
-                                cb.equal(root.get("firstName"), parts[1].trim()))
+                                cb.equal(root.get("lastName"), parts[0].trim().toUpperCase()),
+                                cb.equal(root.get("firstName"), parts[1].trim().toUpperCase()))
                 );
             }
 
@@ -92,8 +98,13 @@ public interface AccountSpecification {
                 return null;
             }
 
+            Predicate predicateOr = cb.or(
+                    cb.like(root.get("firstName"), "%" + firstName.trim().toUpperCase() + "%"),
+                    cb.like(root.get("lastName"), "%" + firstName.trim().toUpperCase() + "%")
+            );
+
             return firstName.split("\\s+").length == 1 ?
-                    cb.like(root.get("firstName"), "%" + firstName.trim().toUpperCase() + "%") :
+                    predicateOr :
                     byAuthor(firstName.toUpperCase()).toPredicate(root, query, cb);
         };
     }
