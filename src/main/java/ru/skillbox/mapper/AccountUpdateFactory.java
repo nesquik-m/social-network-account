@@ -7,6 +7,8 @@ public class AccountUpdateFactory {
 
     public static void updateFields(Account updatedAccount, AccountDto accountDto) {
 
+//        System.out.println(accountDto.getBirthDate());
+
         if (accountDto.getCity() != null) {
             String city = accountDto.getCity();
             updatedAccount.setCity(city.isBlank() ? null : city);
@@ -29,12 +31,15 @@ public class AccountUpdateFactory {
         }
         if (accountDto.getPhone() != null) {
             String phone = accountDto.getPhone();
-            if (phone.length() == 10) {
-                phone = "7" + phone;
-            } else if (phone.length() != 11 || !phone.startsWith("7")) {
-                phone = null;
+            if (phone.isBlank()) {
+                updatedAccount.setPhone(null);
             }
-            updatedAccount.setPhone(phone);
+            if (phone.length() == 11 && phone.startsWith("7")) {
+                updatedAccount.setPhone(phone);
+            }
+            if (phone.length() == 10) {
+                updatedAccount.setPhone("7" + phone);
+            }
         }
         if (accountDto.getAbout() != null) {
             String about = accountDto.getAbout();
