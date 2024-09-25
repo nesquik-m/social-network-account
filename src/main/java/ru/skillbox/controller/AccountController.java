@@ -81,7 +81,7 @@ public class AccountController {
     @GetMapping("/search")
     @LogAspect(type = LogType.CONTROLLER)
     public PageImpl<AccountDto> searchAccount(@ModelAttribute AccountSearchDto dto,
-                                              @PageableDefault(sort = "firstName", direction = Sort.Direction.ASC) Pageable page) {
+                                              @PageableDefault(sort = "firstName", direction = Sort.Direction.ASC, size = 15) Pageable page) {
         return accountService.searchAccount(dto, page);
     }
 
@@ -98,5 +98,16 @@ public class AccountController {
         return accountService.getAccountsByTheirId(ids, page);
     }
 
-}
+    @GetMapping("/profileCovers")
+    @LogAspect(type = LogType.CONTROLLER)
+    public Page<String> getAllProfileCovers(@PageableDefault(size = 1000) Pageable pageable) {
+        return accountService.getAllProfileCover(pageable);
+    }
 
+    @GetMapping("/photos")
+    @LogAspect(type = LogType.CONTROLLER)
+    public Page<String> getAllPhotos(@PageableDefault(size = 1000) Pageable pageable) {
+        return accountService.getAllPhotos(pageable);
+    }
+
+}

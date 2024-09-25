@@ -42,4 +42,10 @@ public interface AccountRepository extends JpaRepository<Account, UUID>, JpaSpec
     @Query("UPDATE Account a SET a.isOnline = false WHERE a.lastOnlineTime < :fiveMinutesAgo")
     void updateOfflineStatus(LocalDateTime fiveMinutesAgo);
 
+    @Query("SELECT DISTINCT a.profileCover FROM Account a WHERE a.profileCover IS NOT NULL")
+    Page<String> findDistinctProfileCovers(Pageable pageable);
+
+    @Query("SELECT DISTINCT a.photo FROM Account a WHERE a.photo IS NOT NULL")
+    Page<String> findDistinctPhotos(Pageable pageable);
+
 }

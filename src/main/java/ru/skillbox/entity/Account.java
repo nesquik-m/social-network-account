@@ -53,14 +53,4 @@ public class Account {
     @Builder.Default
     private List<RoleType> roles = new ArrayList<>();
 
-    public void setPhone(String phoneNumber) {
-        if (phoneNumber.length() == 10) {
-            this.phone = "7" + phoneNumber;
-        } else if (phoneNumber.length() == 11 && phoneNumber.startsWith("7")) {
-            this.phone = phoneNumber;
-        } else {
-            this.phone = null;
-        }
-    }
-
 }

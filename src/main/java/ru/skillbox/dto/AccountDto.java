@@ -1,10 +1,7 @@
 package ru.skillbox.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.skillbox.mapper.LocalDateTimeDeserializer;
 
 import java.time.LocalDateTime;
@@ -18,10 +15,10 @@ public class AccountDto {
 
     private UUID id; // Valid?
     private String email; // Valid?
-    private String city;
-    private String country;
     private String firstName; // Valid?
     private String lastName; // Valid?
+    private String city;
+    private String country;
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime birthDate;
     private Boolean isBlocked;
