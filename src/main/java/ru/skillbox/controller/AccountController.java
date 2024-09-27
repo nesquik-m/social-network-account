@@ -26,7 +26,7 @@ public class AccountController {
 
     private final AccountService accountService;
 
-    @GetMapping("/me")
+    @GetMapping("/me") // test+
     @LogAspect(type = LogType.CONTROLLER)
     public AccountDto getAccount() {
         return accountService.getAccount();
@@ -38,7 +38,7 @@ public class AccountController {
         return accountService.updateAccount(accountDto);
     }
 
-    @DeleteMapping("/me")
+    @DeleteMapping("/me") // test+
     @LogAspect(type = LogType.CONTROLLER)
     public String deleteAccount() {
         accountService.deleteAccount();

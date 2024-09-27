@@ -25,7 +25,7 @@ public interface AccountRepository extends JpaRepository<Account, UUID>, JpaSpec
 
     @Modifying
     @Query("UPDATE Account a SET a.isDeleted = :deleted, a.updatedOn = CURRENT_TIMESTAMP, a.isOnline = false WHERE a.id = :accountId")
-    void updateDeleted(UUID accountId, boolean deleted);
+    int updateDeleted(UUID accountId, boolean deleted);
 
     @Query("SELECT a.id FROM Account a")
     List<UUID> findAllIds();

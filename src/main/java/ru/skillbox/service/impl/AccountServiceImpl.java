@@ -80,7 +80,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
-    @LogAspect(type = LogType.SERVICE)
+    @LogAspect(type = LogType.SERVICE) // test+
     public AccountDto updateAccount(AccountDto accountDto) {
         Account updatedAccount = getAccountById(SecurityUtils.getUUIDFromSecurityContext());
         AccountUpdateFactory.updateFields(updatedAccount, accountDto);
@@ -92,7 +92,11 @@ public class AccountServiceImpl implements AccountService {
     @LogAspect(type = LogType.SERVICE)
     public void deleteAccount() {
         UUID accountId = SecurityUtils.getUUIDFromSecurityContext();
-        accountRepository.updateDeleted(accountId, true);
+        int updated = accountRepository.updateDeleted(accountId, true);
+        if (updated == 0) {
+            throw new AccountNotFoundException(
+                    MessageFormat.format("Account not found for ID: {0}", accountId));
+        }
         kafkaTemplate.send(topicName, new KafkaDeletedAccountEvent(accountId));
     }
 

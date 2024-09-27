@@ -1,5 +1,7 @@
 package ru.skillbox;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import org.testcontainers.utility.DockerImageName;
 import ru.skillbox.dto.kafka.KafkaAuthEvent;
 import ru.skillbox.repository.AccountRepository;
@@ -38,6 +41,7 @@ public class AbstractTest {
                 .withReuse(true);
         postgreSQLContainer.start(); // стартанем контейнер с БД
     }
+
     @DynamicPropertySource
     public static void registerProperties(DynamicPropertyRegistry registry) {
         String jdbcUrl = postgreSQLContainer.getJdbcUrl();
@@ -58,15 +62,41 @@ public class AbstractTest {
     @Autowired
     protected MockMvc mockMvc;
 
+    @PersistenceContext
+    protected EntityManager entityManager;
+
+    protected ObjectMapper objectMapper = new ObjectMapper();
+
+    protected static final String SUCCESSFULLY = "Successfully";
+
+    protected static final String UUID_200_1 = "10000000-0000-0000-0000-000000000200";
+    protected static final String UUID_200_2 = "20000000-0000-0000-0000-000000000200";
+    protected static final String UUID_200_3 = "30000000-0000-0000-0000-000000000200";
+
+    protected static final String UUID_404 = "00000000-0000-0000-0000-000000000404";
+
     @BeforeEach
     public void setup() {
-        KafkaAuthEvent kafkaAuthEvent = new KafkaAuthEvent();
-        kafkaAuthEvent.setUuid(UUID.fromString("8416d06e-3cb9-4d6d-b96a-84f287d216fd"));
-        kafkaAuthEvent.setEmail("test@example.com");
-        kafkaAuthEvent.setFirstName("Test");
-        kafkaAuthEvent.setLastName("User");
+        KafkaAuthEvent kafkaAuthEvent1 = new KafkaAuthEvent();
+        kafkaAuthEvent1.setUuid(UUID.fromString(UUID_200_1));
+        kafkaAuthEvent1.setEmail("test1@example.com");
+        kafkaAuthEvent1.setFirstName("Test1");
+        kafkaAuthEvent1.setLastName("User1");
+        accountService.createAccount(kafkaAuthEvent1);
 
-        accountService.createAccount(kafkaAuthEvent);
+        KafkaAuthEvent kafkaAuthEvent2 = new KafkaAuthEvent();
+        kafkaAuthEvent2.setUuid(UUID.fromString(UUID_200_2));
+        kafkaAuthEvent2.setEmail("test2@example.com");
+        kafkaAuthEvent2.setFirstName("Test2");
+        kafkaAuthEvent2.setLastName("User2");
+        accountService.createAccount(kafkaAuthEvent2);
+
+        KafkaAuthEvent kafkaAuthEvent3 = new KafkaAuthEvent();
+        kafkaAuthEvent3.setUuid(UUID.fromString(UUID_200_3));
+        kafkaAuthEvent3.setEmail("test3@example.com");
+        kafkaAuthEvent3.setFirstName("Test3");
+        kafkaAuthEvent3.setLastName("User3");
+        accountService.createAccount(kafkaAuthEvent3);
     }
 
     @AfterEach
