@@ -146,17 +146,17 @@ public class AccountServiceImpl implements AccountService {
         return filterBy(accountSearchDto, page);
     }
 
-    @Override
-    @LogAspect(type = LogType.SERVICE)
-    public Page<String> getAllProfileCover(Pageable page) {
-        return accountRepository.findDistinctProfileCovers(page);
-    }
-
-    @Override
-    @LogAspect(type = LogType.SERVICE)
-    public Page<String> getAllPhotos(Pageable page) {
-        return accountRepository.findDistinctPhotos(page);
-    }
+//    @Override
+//    @LogAspect(type = LogType.SERVICE)
+//    public Page<String> getAllProfileCover(Pageable page) {
+//        return accountRepository.findDistinctProfileCovers(page);
+//    }
+//
+//    @Override
+//    @LogAspect(type = LogType.SERVICE)
+//    public Page<String> getAllPhotos(Pageable page) {
+//        return accountRepository.findDistinctPhotos(page);
+//    }
 
     @Transactional
     @Scheduled(cron = "${app.scheduled.interval-in-cron}")

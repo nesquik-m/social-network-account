@@ -37,8 +37,8 @@ public interface AccountService {
 
     PageImpl<AccountDto> searchAccount (AccountSearchDto accountSearchDto, Pageable page);
 
-    Page<String> getAllProfileCover(Pageable page);
-
-    Page<String> getAllPhotos(Pageable page);
+//    Page<String> getAllProfileCover(Pageable page);
+//
+//    Page<String> getAllPhotos(Pageable page);
 
 }

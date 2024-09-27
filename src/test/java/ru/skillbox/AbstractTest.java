@@ -72,6 +72,7 @@ public class AbstractTest {
     protected static final String UUID_200_1 = "10000000-0000-0000-0000-000000000200";
     protected static final String UUID_200_2 = "20000000-0000-0000-0000-000000000200";
     protected static final String UUID_200_3 = "30000000-0000-0000-0000-000000000200";
+    protected static final String UUID_200_4 = "40000000-0000-0000-0000-000000000200";
 
     protected static final String UUID_404 = "00000000-0000-0000-0000-000000000404";
 
@@ -97,6 +98,13 @@ public class AbstractTest {
         kafkaAuthEvent3.setFirstName("Test3");
         kafkaAuthEvent3.setLastName("User3");
         accountService.createAccount(kafkaAuthEvent3);
+
+        KafkaAuthEvent kafkaAuthEvent4 = new KafkaAuthEvent();
+        kafkaAuthEvent4.setUuid(UUID.fromString(UUID_200_4));
+        kafkaAuthEvent4.setEmail("email4@example.com");
+        kafkaAuthEvent4.setFirstName("Name");
+        kafkaAuthEvent4.setLastName("Surname");
+        accountService.createAccount(kafkaAuthEvent4);
     }
 
     @AfterEach

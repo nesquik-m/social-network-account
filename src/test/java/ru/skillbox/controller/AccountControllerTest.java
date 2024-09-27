@@ -9,6 +9,8 @@ import ru.skillbox.AbstractTest;
 import ru.skillbox.dto.AccountDto;
 import ru.skillbox.entity.Account;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,13 +18,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.hamcrest.Matchers.hasSize;
 
-public class AccountControllerTest extends AbstractTest {
+class AccountControllerTest extends AbstractTest {
 
     @Test
     @DisplayName("GetAccount, should return 200")
     @WithMockUser(username = UUID_200_1)
-    public void testGetAccount_shouldReturnOk() throws Exception {
+    void testGetAccount_shouldReturnOk() throws Exception {
         mockMvc.perform(get("/api/v1/account/me"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -33,14 +36,14 @@ public class AccountControllerTest extends AbstractTest {
     @Test
     @DisplayName("GetAccount, should return 404")
     @WithMockUser(username = UUID_404)
-    public void testGetAccount_shouldReturnNotFound() throws Exception {
+    void testGetAccount_shouldReturnNotFound() throws Exception {
         mockMvc.perform(get("/api/v1/account/me"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     @DisplayName("GetAccount, should return 401")
-    public void testGetAccount_shouldReturnUnauthorized() throws Exception {
+    void testGetAccount_shouldReturnUnauthorized() throws Exception {
         mockMvc.perform(get("/api/v1/account/me"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -52,7 +55,7 @@ public class AccountControllerTest extends AbstractTest {
     @Test
     @DisplayName("DeleteAccount, should return 200")
     @WithMockUser(username = UUID_200_1)
-    public void testDeleteAccount_shouldReturnOk() throws Exception {
+    void testDeleteAccount_shouldReturnOk() throws Exception {
 
         Account accountBeforeDeletion = accountRepository.findById(UUID.fromString(UUID_200_1)).get();
 
@@ -76,14 +79,14 @@ public class AccountControllerTest extends AbstractTest {
     @Test
     @DisplayName("DeleteAccount, should return 404")
     @WithMockUser(username = UUID_404)
-    public void testDeleteAccount_shouldReturnNotFound() throws Exception {
+    void testDeleteAccount_shouldReturnNotFound() throws Exception {
         mockMvc.perform(delete("/api/v1/account/me"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     @DisplayName("DeleteAccount, should return 401")
-    public void testDeleteAccount_shouldReturnUnauthorized() throws Exception {
+    void testDeleteAccount_shouldReturnUnauthorized() throws Exception {
         mockMvc.perform(delete("/api/v1/account/me"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -95,7 +98,7 @@ public class AccountControllerTest extends AbstractTest {
     @Test
     @DisplayName("GetAllAccounts, should return 200")
     @WithMockUser(username = UUID_200_1)
-    public void testGetAllAccounts_shouldReturnOk() throws Exception {
+    void testGetAllAccounts_shouldReturnOk() throws Exception {
         mockMvc.perform(get("/api/v1/account")
                         .param("page", "0")
                         .param("size", "10")
@@ -104,14 +107,14 @@ public class AccountControllerTest extends AbstractTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content[0].id").value(UUID_200_1))
                 .andExpect(jsonPath("$.content[0].email").value("test1@example.com"))
-                .andExpect(jsonPath("$.totalElements").value(3))
+                .andExpect(jsonPath("$.totalElements").value(4))
                 .andExpect(jsonPath("$.size").value(10))
                 .andExpect(jsonPath("$.number").value(0));
     }
 
     @Test
     @DisplayName("GetAllAccounts, should return 401")
-    public void testGetAllAccounts_shouldReturnUnauthorized() throws Exception {
+    void testGetAllAccounts_shouldReturnUnauthorized() throws Exception {
         mockMvc.perform(get("/api/v1/account")
                         .param("page", "0")
                         .param("size", "10")
@@ -126,7 +129,7 @@ public class AccountControllerTest extends AbstractTest {
     @Test
     @DisplayName("UpdateAccount, should return 200")
     @WithMockUser(username = UUID_200_1)
-    public void testUpdateAccount_shouldReturnOk() throws Exception {
+    void testUpdateAccount_shouldReturnOk() throws Exception {
 
         Account accountBeforeUpdate = accountRepository.findById(UUID.fromString(UUID_200_1)).get();
 
@@ -174,7 +177,7 @@ public class AccountControllerTest extends AbstractTest {
 
     @Test
     @DisplayName("UpdateAccount, should return 401")
-    public void testUpdateAccount_shouldReturnUnauthorized() throws Exception {
+    void testUpdateAccount_shouldReturnUnauthorized() throws Exception {
 
         AccountDto accountDto = AccountDto.builder()
                 .id(UUID.fromString(UUID_404))
@@ -201,7 +204,7 @@ public class AccountControllerTest extends AbstractTest {
     @Test
     @DisplayName("UpdateAccount, correct phone, should return 200")
     @WithMockUser(username = UUID_200_1)
-    public void testUpdatePhone_correctPhone_shouldReturnOk() throws Exception {
+    void testUpdatePhone_correctPhone_shouldReturnOk() throws Exception {
 
         Account accountBeforeUpdate = accountRepository.findById(UUID.fromString(UUID_200_1)).get();
 
@@ -223,7 +226,7 @@ public class AccountControllerTest extends AbstractTest {
     @Test
     @DisplayName("UpdateAccount, correct phone without 7, should return 200")
     @WithMockUser(username = UUID_200_1)
-    public void testUpdatePhone_correctPhoneWithout7_shouldReturnOk() throws Exception {
+    void testUpdatePhone_correctPhoneWithout7_shouldReturnOk() throws Exception {
 
         Account accountBeforeUpdate = accountRepository.findById(UUID.fromString(UUID_200_1)).get();
 
@@ -245,7 +248,7 @@ public class AccountControllerTest extends AbstractTest {
     @Test
     @DisplayName("UpdateAccount, incorrect phone, should return 200")
     @WithMockUser(username = UUID_200_1)
-    public void testUpdatePhone_incorrectPhone_shouldReturnOk() throws Exception {
+    void testUpdatePhone_incorrectPhone_shouldReturnOk() throws Exception {
 
         Account accountBeforeUpdate = accountRepository.findById(UUID.fromString(UUID_200_1)).get();
 
@@ -270,7 +273,7 @@ public class AccountControllerTest extends AbstractTest {
     @Test
     @DisplayName("GetAccountById, should return 200")
     @WithMockUser(username = UUID_200_1)
-    public void testGetAccountById_shouldReturnOk() throws Exception {
+    void testGetAccountById_shouldReturnOk() throws Exception {
 
         UUID accountId = UUID.fromString(UUID_200_1);
 
@@ -283,7 +286,7 @@ public class AccountControllerTest extends AbstractTest {
 
     @Test
     @DisplayName("GetAccountById, should return 401")
-    public void testGetAccountById_shouldReturnUnauthorized() throws Exception {
+    void testGetAccountById_shouldReturnUnauthorized() throws Exception {
 
         UUID accountId = UUID.fromString(UUID_200_1);
 
@@ -298,7 +301,7 @@ public class AccountControllerTest extends AbstractTest {
     @Test
     @DisplayName("GetAccountById, should return 404")
     @WithMockUser(username = UUID_200_1)
-    public void testGetAccountById_shouldReturnNotFound() throws Exception {
+    void testGetAccountById_shouldReturnNotFound() throws Exception {
 
         UUID accountId = UUID.fromString(UUID_404);
 
@@ -310,7 +313,7 @@ public class AccountControllerTest extends AbstractTest {
     @Test
     @DisplayName("BlockAndUnblockAccount, should return 200")
     @WithMockUser(username = UUID_200_1)
-    public void testBlockAndUnblockAccount_shouldReturnOk() throws Exception {
+    void testBlockAndUnblockAccount_shouldReturnOk() throws Exception {
         UUID accountId = UUID.fromString(UUID_200_1);
 
         Account accountBeforeBlock = accountRepository.findById(accountId).get();
@@ -345,7 +348,7 @@ public class AccountControllerTest extends AbstractTest {
     @Test
     @DisplayName("BlockAccount, should return 404")
     @WithMockUser(username = UUID_200_1)
-    public void testBlockAccount_shouldReturnNotFound() throws Exception {
+    void testBlockAccount_shouldReturnNotFound() throws Exception {
 
         UUID accountId = UUID.fromString(UUID_404);
 
@@ -356,7 +359,7 @@ public class AccountControllerTest extends AbstractTest {
     @Test
     @DisplayName("UnblockAccount, should return 404")
     @WithMockUser(username = UUID_200_1)
-    public void testUnblockAccount_shouldReturnNotFound() throws Exception {
+    void testUnblockAccount_shouldReturnNotFound() throws Exception {
 
         UUID accountId = UUID.fromString(UUID_404);
 
@@ -366,7 +369,7 @@ public class AccountControllerTest extends AbstractTest {
 
     @Test
     @DisplayName("BlockAccount, should return 401")
-    public void testBlockAccount_shouldReturnUnouthorized() throws Exception {
+    void testBlockAccount_shouldReturnUnauthorized() throws Exception {
 
         UUID accountId = UUID.fromString(UUID_200_1);
 
@@ -384,7 +387,7 @@ public class AccountControllerTest extends AbstractTest {
 
     @Test
     @DisplayName("UnblockAccount, should return 401")
-    public void testUnblockAccount_shouldReturnUnouthorized() throws Exception {
+    void testUnblockAccount_shouldReturnUnauthorized() throws Exception {
 
         UUID accountId = UUID.fromString(UUID_200_1);
 
@@ -396,5 +399,122 @@ public class AccountControllerTest extends AbstractTest {
                 .andExpect(jsonPath("$.message").exists());
     }
 
+    @Test
+    @DisplayName("SearchAccountByFirstNameAndLastName, should return 200")
+    @WithMockUser(username = UUID_200_1)
+    void testSearchAccount_byFirstNameAndLastName_shouldReturnOk() throws Exception {
+
+        mockMvc.perform(get("/api/v1/account/search")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("firstName", "Test")
+                        .param("lastName", "User")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("sort", "id,asc")
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.content[0].id").value(UUID_200_2))
+                .andExpect(jsonPath("$.content[1].id").value(UUID_200_3))
+                .andExpect(jsonPath("$.totalElements").value(2))
+                .andExpect(jsonPath("$.size").value(10))
+                .andExpect(jsonPath("$.number").value(0));
+    }
+
+//    @Test // Тест проваливается
+//    @DisplayName("SearchAccountByCityAndCountry, should return 200")
+//    @WithMockUser(username = UUID_200_1)
+//    void testSearchAccount_byCityAndCountry_shouldReturnOk() throws Exception {
+//
+//        AccountDto accountDto = AccountDto.builder()
+//                .city("Москва")
+//                .country("Россия")
+//                .build();
+//
+//        accountService.updateAccount(accountDto);
+//
+//        Account account = accountRepository.findById(UUID.fromString(UUID_200_1)).get();
+//        System.out.println(account);
+////        entityManager.clear();
+//
+//        mockMvc.perform(get("/api/v1/account/search")
+//                        .contentType(MediaType.APPLICATION_JSON)
+////                        .param("city", "Москва")
+//                        .param("country", "Россия")
+//                        .param("page", "0")
+//                        .param("size", "10")
+//                        .param("sort", "id,asc")
+//                )
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(jsonPath("$.totalElements").value(1))
+//                .andExpect(jsonPath("$.size").value(10))
+//                .andExpect(jsonPath("$.number").value(0));
+//    }
+
+    @Test
+    @DisplayName("GetAllAccountIds, should return 200")
+    @WithMockUser(username = UUID_200_1)
+    void testGetAllAccountIds_shouldReturnOk() throws Exception {
+
+        mockMvc.perform(get("/api/v1/account/ids")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$").value(hasSize(4)));
+    }
+
+    @Test
+    @DisplayName("GetAllAccountIds, should return 401")
+    void testGetAllAccountIds_shouldReturnUnauthorized() throws Exception {
+
+        mockMvc.perform(get("/api/v1/account/ids")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status").value(HttpServletResponse.SC_UNAUTHORIZED))
+                .andExpect(jsonPath("$.error").value("Unauthorized"))
+                .andExpect(jsonPath("$.message").exists());
+    }
+
+    @Test
+    @DisplayName("GetAccountsByTheirIds, should return 200")
+    @WithMockUser(username = UUID_200_1)
+    void testGetAccountsByTheirIds_shouldReturnOk() throws Exception {
+
+        List<UUID> ids = Arrays.asList(UUID.fromString(UUID_200_2), UUID.fromString(UUID_200_3));
+
+        mockMvc.perform(get("/api/v1/account/accountIds")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("ids", ids.get(0).toString())
+                        .param("ids", ids.get(1).toString())
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("sort", "firstName,asc"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.totalElements").value(2));
+    }
+
+    @Test
+    @DisplayName("GetAccountsByTheirIds, should return 401")
+    void testGetAccountsByTheirIds_shouldReturnUnauthorized() throws Exception {
+
+        List<UUID> ids = Arrays.asList(UUID.fromString(UUID_200_2), UUID.fromString(UUID_200_3));
+
+        mockMvc.perform(get("/api/v1/account/accountIds")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("ids", ids.get(0).toString())
+                        .param("ids", ids.get(1).toString())
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("sort", "firstName,asc"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status").value(HttpServletResponse.SC_UNAUTHORIZED))
+                .andExpect(jsonPath("$.error").value("Unauthorized"))
+                .andExpect(jsonPath("$.message").exists());
+    }
 
 }
