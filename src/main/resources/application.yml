@@ -7,7 +7,6 @@ spring:
 
   datasource:
     url: jdbc:postgresql://89.111.174.153:5432/social-network-account
-#    url: jdbc:postgresql://localhost:5432/social-network-account
     username: postgres
     password: postgres
     hikari:
@@ -26,7 +25,6 @@ spring:
 
   kafka:
     bootstrap-servers: 89.111.174.153:9093
-#    bootstrap-servers: localhost:9093
 
 app:
   kafka:
@@ -43,5 +41,4 @@ eureka:
   client:
     enabled: true
     service-url:
-#      defaultZone: http://localhost:8761/eureka/
       defaultZone: http://89.111.174.153:8761/eureka/
