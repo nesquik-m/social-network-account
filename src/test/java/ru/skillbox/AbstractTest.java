@@ -18,7 +18,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import org.testcontainers.utility.DockerImageName;
-import ru.skillbox.dto.kafka.KafkaAuthEvent;
 import ru.skillbox.entity.Account;
 import ru.skillbox.repository.AccountRepository;
 import ru.skillbox.service.AccountService;
@@ -103,34 +102,6 @@ public class AbstractTest {
         }
 
         accountRepository.saveAll(accounts);
-
-//        KafkaAuthEvent kafkaAuthEvent1 = new KafkaAuthEvent();
-//        kafkaAuthEvent1.setUuid(UUID.fromString(UUID_200_1));
-//        kafkaAuthEvent1.setEmail("test1@example.com");
-//        kafkaAuthEvent1.setFirstName("Test1");
-//        kafkaAuthEvent1.setLastName("User1");
-//        accountService.createAccount(kafkaAuthEvent1);
-//
-//        KafkaAuthEvent kafkaAuthEvent2 = new KafkaAuthEvent();
-//        kafkaAuthEvent2.setUuid(UUID.fromString(UUID_200_2));
-//        kafkaAuthEvent2.setEmail("test2@example.com");
-//        kafkaAuthEvent2.setFirstName("Test2");
-//        kafkaAuthEvent2.setLastName("User2");
-//        accountService.createAccount(kafkaAuthEvent2);
-//
-//        KafkaAuthEvent kafkaAuthEvent3 = new KafkaAuthEvent();
-//        kafkaAuthEvent3.setUuid(UUID.fromString(UUID_200_3));
-//        kafkaAuthEvent3.setEmail("test3@example.com");
-//        kafkaAuthEvent3.setFirstName("Test3");
-//        kafkaAuthEvent3.setLastName("User3");
-//        accountService.createAccount(kafkaAuthEvent3);
-//
-//        KafkaAuthEvent kafkaAuthEvent4 = new KafkaAuthEvent();
-//        kafkaAuthEvent4.setUuid(UUID.fromString(UUID_200_4));
-//        kafkaAuthEvent4.setEmail("email4@example.com");
-//        kafkaAuthEvent4.setFirstName("Name");
-//        kafkaAuthEvent4.setLastName("Surname");
-//        accountService.createAccount(kafkaAuthEvent4);
     }
 
     @AfterEach
