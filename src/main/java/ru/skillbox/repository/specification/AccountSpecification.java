@@ -8,43 +8,16 @@ import ru.skillbox.security.SecurityUtils;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public interface AccountSpecification {
-
-    /*
-    {
-      "accountSearchDto": {
-        "ids": [
-          "33b7b733-be17-4fd4-9d16-f650135f3821",
-          "2adc4c6c-5a91-46a3-8262-9974242615b7",
-          "3bf82c19-a821-4003-b8f6-2e67e331a915"
-        ],
-        "firstName": "name",
-        "lastName": "name",
-        "birthDateFrom": "1980-08-26T00:41:16.510Z",
-        "birthDateTo": "1984-08-26T00:41:16.510Z",
-        "city": "Moscow",
-        "country": "Russia",
-        "blocked": false,
-        "deleted": true,
-        "ageFrom": "20",
-        "ageTo": 40
-      },
-      "pageSize": 10,
-      "pageNumber": 0
-    }
-    */
 
     static Specification<Account> withFilter(AccountSearchDto asd) {
         return Specification.where(byIds(asd.getIds()))
                 .and(byAuthor(asd.getAuthor()))
                 .and(byFirstName(asd.getFirstName()))
                 .and(byLastName(asd.getLastName()))
-                .and(byBirthDate(asd.getBirthDateFrom(), asd.getBirthDateTo()))
                 .and(byCity(asd.getCity()))
                 .and(byCountry(asd.getCountry()))
                 .and(byBlocked(asd.isBlocked()))
@@ -116,27 +89,6 @@ public interface AccountSpecification {
             }
 
             return cb.like(root.get("lastName"), "%" + lastName.trim().toUpperCase() + "%");
-        };
-    }
-
-
-    static Specification<Account> byBirthDate(LocalDateTime birthDateFrom, LocalDateTime birthDateTo) {
-        return (root, query, cb) -> {
-            if (birthDateFrom == null && birthDateTo == null) {
-                return null;
-            }
-
-            List<Predicate> predicates = new ArrayList<>();
-
-            if (birthDateFrom != null) {
-                predicates.add(cb.greaterThanOrEqualTo(root.get("birthDate"), birthDateFrom));
-            }
-
-            if (birthDateTo != null) {
-                predicates.add(cb.lessThanOrEqualTo(root.get("birthDate"), birthDateTo));
-            }
-
-            return cb.and(predicates.toArray(new Predicate[0]));
         };
     }
 

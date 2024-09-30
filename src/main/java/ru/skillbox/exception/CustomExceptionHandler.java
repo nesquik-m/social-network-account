@@ -1,15 +1,10 @@
 package ru.skillbox.exception;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.List;
 
 @RestControllerAdvice
 @Slf4j
@@ -18,7 +13,7 @@ public class CustomExceptionHandler {
     @ExceptionHandler(AccountNotFoundException.class)
     public ResponseEntity<Void> notFound(AccountNotFoundException ex) {
         log.error("ERROR: {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // TODO: нужно ли возвращать объект (body() ErrorResponse)?
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @ExceptionHandler(AlreadyExistsException.class)
@@ -31,19 +26,6 @@ public class CustomExceptionHandler {
     public ResponseEntity<Void> badRequest(BadRequestException ex) {
         log.error("ERROR: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Void> notValid(MethodArgumentNotValidException ex) {
-        BindingResult bindingResult = ex.getBindingResult();
-        List<String> errorMessages = bindingResult.getAllErrors()
-                .stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                .toList();
-
-        String errors = String.join("; ", errorMessages);
-        log.error("ERROR: {}", errors);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build(); // TODO: нужно ли возвращать объект (body() ErrorResponse)?
     }
 
 }

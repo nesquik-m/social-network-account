@@ -1,6 +1,5 @@
 package ru.skillbox.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.*;
@@ -26,7 +25,7 @@ public class AccountController {
 
     private final AccountService accountService;
 
-    @GetMapping("/me") // test+
+    @GetMapping("/me")
     @LogAspect(type = LogType.CONTROLLER)
     public AccountDto getAccount() {
         return accountService.getAccount();
@@ -34,11 +33,11 @@ public class AccountController {
 
     @PutMapping("/me")
     @LogAspect(type = LogType.CONTROLLER)
-    public AccountDto updateAccount(@RequestBody @Valid AccountDto accountDto) {
+    public AccountDto updateAccount(@RequestBody AccountDto accountDto) {
         return accountService.updateAccount(accountDto);
     }
 
-    @DeleteMapping("/me") // test+
+    @DeleteMapping("/me")
     @LogAspect(type = LogType.CONTROLLER)
     public String deleteAccount() {
         accountService.deleteAccount();
@@ -73,7 +72,7 @@ public class AccountController {
 
     @PostMapping("/searchByFilter")
     @LogAspect(type = LogType.CONTROLLER)
-    public PageImpl<AccountDto> searchAccountByFilter(@RequestBody @Valid AccountByFilterDto filterDto) {
+    public PageImpl<AccountDto> searchAccountByFilter(@RequestBody AccountByFilterDto filterDto) {
         return accountService.filterBy(filterDto.getAccountSearchDto(),
                 PageRequest.of(filterDto.getPageNumber(), filterDto.getPageSize()));
     }
@@ -97,17 +96,5 @@ public class AccountController {
                                                   @PageableDefault(sort = "firstName", direction = Sort.Direction.ASC) Pageable page) {
         return accountService.getAccountsByTheirId(ids, page);
     }
-
-//    @GetMapping("/profileCovers")
-//    @LogAspect(type = LogType.CONTROLLER)
-//    public Page<String> getAllProfileCovers(@PageableDefault(size = 1000) Pageable pageable) {
-//        return accountService.getAllProfileCover(pageable);
-//    }
-//
-//    @GetMapping("/photos")
-//    @LogAspect(type = LogType.CONTROLLER)
-//    public Page<String> getAllPhotos(@PageableDefault(size = 1000) Pageable pageable) {
-//        return accountService.getAllPhotos(pageable);
-//    }
 
 }

@@ -6,7 +6,6 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +15,6 @@ import ru.skillbox.aop.LogType;
 import ru.skillbox.dto.AccountDto;
 import ru.skillbox.dto.AccountSearchDto;
 import ru.skillbox.dto.kafka.KafkaAuthEvent;
-import ru.skillbox.dto.kafka.KafkaDeletedAccountEvent;
 import ru.skillbox.entity.Account;
 import ru.skillbox.exception.AccountNotFoundException;
 import ru.skillbox.exception.AlreadyExistsException;
@@ -38,8 +36,6 @@ import java.util.UUID;
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
-
-    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Value("${app.scheduled.offline-status-minutes}")
     private int offlineStatusMinutes;
@@ -97,7 +93,6 @@ public class AccountServiceImpl implements AccountService {
             throw new AccountNotFoundException(
                     MessageFormat.format("Account not found for ID: {0}", accountId));
         }
-        kafkaTemplate.send(topicName, new KafkaDeletedAccountEvent(accountId));
     }
 
     @Override
@@ -145,18 +140,6 @@ public class AccountServiceImpl implements AccountService {
     public PageImpl<AccountDto> searchAccount(AccountSearchDto accountSearchDto, Pageable page) {
         return filterBy(accountSearchDto, page);
     }
-
-//    @Override
-//    @LogAspect(type = LogType.SERVICE)
-//    public Page<String> getAllProfileCover(Pageable page) {
-//        return accountRepository.findDistinctProfileCovers(page);
-//    }
-//
-//    @Override
-//    @LogAspect(type = LogType.SERVICE)
-//    public Page<String> getAllPhotos(Pageable page) {
-//        return accountRepository.findDistinctPhotos(page);
-//    }
 
     @Transactional
     @Scheduled(cron = "${app.scheduled.interval-in-cron}")

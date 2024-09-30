@@ -10,7 +10,8 @@ import java.util.*;
 
 @Entity
 @Table(name = "accounts")
-@Data
+@Getter
+@Setter
 @Builder
 @ToString
 @NoArgsConstructor

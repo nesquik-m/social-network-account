@@ -1,15 +1,16 @@
 package ru.skillbox.dto.kafka;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 @Builder
 public class KafkaNewAccountEvent {
 
-//    private UUID code;
     private UUID id;
     private String email;
     private String firstName;

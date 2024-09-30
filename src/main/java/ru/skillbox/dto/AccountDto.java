@@ -7,16 +7,17 @@ import ru.skillbox.mapper.LocalDateTimeDeserializer;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountDto {
 
-    private UUID id; // Valid?
-    private String email; // Valid?
-    private String firstName; // Valid?
-    private String lastName; // Valid?
+    private UUID id;
+    private String email;
+    private String firstName;
+    private String lastName;
     private String city;
     private String country;
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)

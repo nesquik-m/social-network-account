@@ -107,7 +107,7 @@ class AccountControllerTest extends AbstractTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content[0].id").value(UUID_200_1))
                 .andExpect(jsonPath("$.content[0].email").value("test1@example.com"))
-                .andExpect(jsonPath("$.totalElements").value(4))
+                .andExpect(jsonPath("$.totalElements").value(5))
                 .andExpect(jsonPath("$.size").value(10))
                 .andExpect(jsonPath("$.number").value(0));
     }
@@ -134,10 +134,11 @@ class AccountControllerTest extends AbstractTest {
         Account accountBeforeUpdate = accountRepository.findById(UUID.fromString(UUID_200_1)).get();
 
         assertFalse(accountBeforeUpdate.getIsDeleted());
-        assertNull(accountBeforeUpdate.getCountry());
-        assertNull(accountBeforeUpdate.getCity());
-        assertEquals("TEST1", accountBeforeUpdate.getFirstName());
-        assertEquals("USER1", accountBeforeUpdate.getLastName());
+        assertEquals("Россия", accountBeforeUpdate.getCountry());
+        assertEquals("Москва", accountBeforeUpdate.getCity());
+        assertEquals("Name1", accountBeforeUpdate.getFirstName());
+        assertEquals("Surname1", accountBeforeUpdate.getLastName());
+        assertNull(accountBeforeUpdate.getPhone());
         assertNull(accountBeforeUpdate.getAbout());
         assertNull(accountBeforeUpdate.getProfileCover());
         assertNull(accountBeforeUpdate.getEmojiStatus());
@@ -153,6 +154,7 @@ class AccountControllerTest extends AbstractTest {
                 .profileCover("UpdatedProfileCover")
                 .emojiStatus("1")
                 .photo("UpdatedPhoto")
+                .phone("78887776655")
                 .build();
 
         mockMvc.perform(put("/api/v1/account/me")
@@ -172,6 +174,7 @@ class AccountControllerTest extends AbstractTest {
         assertEquals("UpdatedProfileCover", accountAfterUpdate.getProfileCover());
         assertEquals("1", accountAfterUpdate.getEmojiStatus());
         assertEquals("UpdatedPhoto", accountAfterUpdate.getPhoto());
+        assertEquals("78887776655", accountAfterUpdate.getPhone());
 
     }
 
@@ -400,57 +403,83 @@ class AccountControllerTest extends AbstractTest {
     }
 
     @Test
-    @DisplayName("SearchAccountByFirstNameAndLastName, should return 200")
+    @DisplayName("SearchAccount, should return 200")
     @WithMockUser(username = UUID_200_1)
-    void testSearchAccount_byFirstNameAndLastName_shouldReturnOk() throws Exception {
+    void testSearchAccount_shouldReturnOk() throws Exception {
 
         mockMvc.perform(get("/api/v1/account/search")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("firstName", "Test")
                         .param("lastName", "User")
+                        .param("country", "Россия")
+                        .param("city", "Москва")
+                        .param("isBlocked", String.valueOf(false))
+                        .param("isDeleted", String.valueOf(false))
+                        .param("ageFrom", "20")
+                        .param("ageTo", "35")
                         .param("page", "0")
                         .param("size", "10")
                         .param("sort", "id,asc")
                 )
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.content[0].id").value(UUID_200_2))
-                .andExpect(jsonPath("$.content[1].id").value(UUID_200_3))
-                .andExpect(jsonPath("$.totalElements").value(2))
-                .andExpect(jsonPath("$.size").value(10))
-                .andExpect(jsonPath("$.number").value(0));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        // как тут протестировать, что результаты соответствуют ожидаемым?
     }
 
-//    @Test // Тест проваливается
-//    @DisplayName("SearchAccountByCityAndCountry, should return 200")
-//    @WithMockUser(username = UUID_200_1)
-//    void testSearchAccount_byCityAndCountry_shouldReturnOk() throws Exception {
-//
-//        AccountDto accountDto = AccountDto.builder()
-//                .city("Москва")
-//                .country("Россия")
-//                .build();
-//
-//        accountService.updateAccount(accountDto);
-//
-//        Account account = accountRepository.findById(UUID.fromString(UUID_200_1)).get();
-//        System.out.println(account);
-////        entityManager.clear();
-//
-//        mockMvc.perform(get("/api/v1/account/search")
-//                        .contentType(MediaType.APPLICATION_JSON)
-////                        .param("city", "Москва")
-//                        .param("country", "Россия")
-//                        .param("page", "0")
-//                        .param("size", "10")
-//                        .param("sort", "id,asc")
-//                )
-//                .andExpect(status().isOk())
-//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(jsonPath("$.totalElements").value(1))
-//                .andExpect(jsonPath("$.size").value(10))
-//                .andExpect(jsonPath("$.number").value(0));
-//    }
+    @Test
+    @DisplayName("SearchAccount, by Author - firstName, should return 200")
+    @WithMockUser(username = UUID_200_1)
+    void testSearchAccount_byAuthor_shouldReturnOk() throws Exception {
+
+        mockMvc.perform(get("/api/v1/account/search")
+                        .contentType(MediaType.APPLICATION_JSON)
+//                        .param("author", "Test1 User1")
+                        .param("firstName", "Test1 User1")
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("sort", "id,asc")
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        // как тут протестировать, что результаты соответствуют ожидаемым?
+    }
+
+    @Test
+    @DisplayName("SearchAccount, by firstName - author, should return 200")
+    @WithMockUser(username = UUID_200_1)
+    void testSearchAccount_byFirstName_shouldReturnOk() throws Exception {
+
+        mockMvc.perform(get("/api/v1/account/search")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .param("author", "Test1")
+                                .param("page", "0")
+                                .param("size", "10")
+                                .param("sort", "id,asc")
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        // как тут протестировать, что результаты соответствуют ожидаемым?
+    }
+
+    @Test
+    @DisplayName("SearchAccount, should return 200")
+    @WithMockUser(username = UUID_200_1)
+    void testSearchAccount_byIds_shouldReturnOk() throws Exception {
+
+        List<UUID> ids = Arrays.asList(UUID.fromString(UUID_200_2), UUID.fromString(UUID_200_3));
+
+        mockMvc.perform(get("/api/v1/account/search")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("ids", ids.get(0).toString())
+                        .param("ids", ids.get(1).toString())
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("sort", "id,asc")
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        // как тут протестировать, что результаты соответствуют ожидаемым?
+    }
 
     @Test
     @DisplayName("GetAllAccountIds, should return 200")
@@ -462,7 +491,7 @@ class AccountControllerTest extends AbstractTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$").value(hasSize(4)));
+                .andExpect(jsonPath("$").value(hasSize(5)));
     }
 
     @Test

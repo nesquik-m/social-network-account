@@ -26,28 +26,6 @@ public class AccountMapper {
                 .build();
     }
 
-    public Account accountDtoToAccount(AccountDto accountDto) {
-        return Account.builder()
-                .id(accountDto.getId())
-                .email(accountDto.getEmail())
-                .city(accountDto.getCity())
-                .country(accountDto.getCountry())
-                .firstName(accountDto.getFirstName())
-                .lastName(accountDto.getLastName())
-                .birthDate(accountDto.getBirthDate())
-                .isBlocked(accountDto.getIsBlocked())
-                .isDeleted(accountDto.getIsDeleted())
-                .isOnline(accountDto.getIsOnline())
-                .createdOn(accountDto.getCreatedOn())
-                .updatedOn(accountDto.getUpdatedOn())
-                .phone(accountDto.getPhone())
-                .about(accountDto.getAbout())
-                .profileCover(accountDto.getProfileCover())
-                .emojiStatus(accountDto.getEmojiStatus())
-                .photo(accountDto.getPhoto())
-                .build();
-    }
-
     public AccountDto accountToAccountDto(Account account) {
         return AccountDto.builder()
                 .id(account.getId())
