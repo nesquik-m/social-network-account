@@ -6,6 +6,7 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +40,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Value("${app.scheduled.offline-status-minutes}")
     private int offlineStatusMinutes;
+
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Value("${app.kafka.kafka-producer-deleted-account-topic}")
     private String topicName;
@@ -93,6 +96,7 @@ public class AccountServiceImpl implements AccountService {
             throw new AccountNotFoundException(
                     MessageFormat.format("Account not found for ID: {0}", accountId));
         }
+        kafkaTemplate.send(topicName, accountId);
     }
 
     @Override
