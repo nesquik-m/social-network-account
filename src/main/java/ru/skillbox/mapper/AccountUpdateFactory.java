@@ -3,13 +3,12 @@ package ru.skillbox.mapper;
 import ru.skillbox.dto.AccountDto;
 import ru.skillbox.entity.Account;
 
-import java.time.LocalDateTime;
-
 public class AccountUpdateFactory {
 
-    public static void updateFields(Account updatedAccount, AccountDto accountDto) {
+    private AccountUpdateFactory() {
+    }
 
-//        System.out.println(accountDto.getBirthDate());
+    public static void updateFields(Account updatedAccount, AccountDto accountDto) {
 
         if (accountDto.getCity() != null) {
             String city = accountDto.getCity();
@@ -31,11 +30,6 @@ public class AccountUpdateFactory {
         if (accountDto.getBirthDate() != null) {
             updatedAccount.setBirthDate(accountDto.getBirthDate());
         }
-//        if (accountDto.getBirthDate() != null && accountDto.getBirthDate().isBefore(LocalDateTime.now())) {
-//            updatedAccount.setBirthDate(accountDto.getBirthDate());
-//        } // вариант 2 -> доп. проверка на дату
-
-//        updatedAccount.setBirthDate(accountDto.getBirthDate()); // вариант 3 -> добавлять любую указанную дату или null
 
         if (accountDto.getEmojiStatus() != null) {
             updatedAccount.setEmojiStatus(accountDto.getEmojiStatus());

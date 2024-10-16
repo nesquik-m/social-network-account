@@ -25,9 +25,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/api/v1/account/profileCovers/**").permitAll()
-                        .requestMatchers("/api/v1/account/photos/**").permitAll()
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/account/**").hasAnyRole("ADMIN", "USER", "MODERATOR")
                         .anyRequest().authenticated())
                 .exceptionHandling(configurer -> configurer.authenticationEntryPoint(jwtAuthenticationEntryPoint))

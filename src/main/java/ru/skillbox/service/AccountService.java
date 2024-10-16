@@ -1,6 +1,5 @@
 package ru.skillbox.service;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import ru.skillbox.dto.AccountDto;
@@ -36,9 +35,5 @@ public interface AccountService {
     PageImpl<AccountDto> filterBy(AccountSearchDto accountSearchDto, Pageable page);
 
     PageImpl<AccountDto> searchAccount (AccountSearchDto accountSearchDto, Pageable page);
-
-//    Page<String> getAllProfileCover(Pageable page);
-//
-//    Page<String> getAllPhotos(Pageable page);
 
 }

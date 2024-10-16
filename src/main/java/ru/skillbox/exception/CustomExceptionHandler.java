@@ -12,19 +12,19 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(AccountNotFoundException.class)
     public ResponseEntity<Void> notFound(AccountNotFoundException ex) {
-        log.error("ERROR: {}", ex.getMessage());
+        log.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @ExceptionHandler(AlreadyExistsException.class)
     public ResponseEntity<Void> alreadyExists(AlreadyExistsException ex) {
-        log.error("ERROR: {}", ex.getMessage());
+        log.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<Void> badRequest(BadRequestException ex) {
-        log.error("ERROR: {}", ex.getMessage());
+        log.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 

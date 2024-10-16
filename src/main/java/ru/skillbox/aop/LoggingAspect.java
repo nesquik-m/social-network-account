@@ -20,24 +20,21 @@ public class LoggingAspect {
         String methodName = joinPoint.getSignature().getName();
         Object[] args = joinPoint.getArgs();
 
-        switch (logAspect.type()) {
-            case CONTROLLER -> {
-                HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-                String httpMethod = request.getMethod();
-                String requestURL = request.getRequestURI();
-                log.info("CONTROLLER {} | Method: {} | URL: {} | HTTP Method: {} | Args: {}",
-                        joinPoint.getTarget().getClass().getSimpleName(),
-                        methodName,
-                        requestURL,
-                        httpMethod,
-                        args);
-            }
-            case SERVICE -> {
-                log.info("SERVICE {} | Method: {} | Args: {}",
-                        joinPoint.getTarget().getClass().getSimpleName(),
-                        methodName,
-                        args);
-            }
+        if (logAspect.type() == LogType.CONTROLLER) {
+            HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+            String httpMethod = request.getMethod();
+            String requestURL = request.getRequestURI();
+            log.info("CONTROLLER {} | Method: {} | URL: {} | HTTP Method: {} | Args: {}",
+                    joinPoint.getTarget().getClass().getSimpleName(),
+                    methodName,
+                    requestURL,
+                    httpMethod,
+                    args);
+        } else if (logAspect.type() == LogType.SERVICE) {
+            log.info("SERVICE {} | Method: {} | Args: {}",
+                    joinPoint.getTarget().getClass().getSimpleName(),
+                    methodName,
+                    args);
         }
     }
 }

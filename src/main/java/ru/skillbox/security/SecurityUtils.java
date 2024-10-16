@@ -10,7 +10,7 @@ public class SecurityUtils {
 
     public static UUID getUUIDFromSecurityContext() {
         var currentPrincipal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (currentPrincipal instanceof User user) {
+        if (currentPrincipal instanceof User user && user.getUsername() != null) {
             return UUID.fromString(user.getUsername());
         }
         throw new BadRequestException("Account id is null!");
