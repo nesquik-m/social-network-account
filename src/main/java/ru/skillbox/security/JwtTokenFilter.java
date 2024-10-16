@@ -22,7 +22,6 @@ import ru.skillbox.entity.RoleType;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -72,7 +71,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         List<String> roles = (List<String>) SignedJWT.parse(token).getPayload().toJSONObject().get("roles");
         return roles.stream()
                 .map(RoleType::valueOf)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 }

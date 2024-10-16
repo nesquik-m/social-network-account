@@ -61,7 +61,7 @@ public class AccountMapper {
     public List<AccountDto> accountListToAccountDtoList(List<Account> accounts) {
         return accounts.stream()
                 .map(AccountMapper::accountToAccountDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 }
