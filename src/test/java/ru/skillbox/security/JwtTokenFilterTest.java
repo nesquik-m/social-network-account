@@ -42,7 +42,7 @@ class JwtTokenFilterTest {
 
     @Test
     @DisplayName("InvalidToken")
-    public void testDoFilterInternal_InvalidToken() throws Exception {
+    void testDoFilterInternal_InvalidToken() throws Exception {
         when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn("Bearer invalid-token");
         when(openFeignClient.validateToken("Bearer invalid-token")).thenReturn(new ValidTokenResponse(false));
 
@@ -52,7 +52,7 @@ class JwtTokenFilterTest {
 
     @Test
     @DisplayName("NoToken")
-    public void testDoFilterInternal_NoToken() throws Exception {
+    void testDoFilterInternal_NoToken() throws Exception {
         when(request.getHeader(HttpHeaders.AUTHORIZATION)).thenReturn(null);
         jwtTokenFilter.doFilterInternal(request, response, filterChain);
         assertNull(SecurityContextHolder.getContext().getAuthentication());
