@@ -20,7 +20,6 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import org.testcontainers.utility.DockerImageName;
 import ru.skillbox.entity.Account;
 import ru.skillbox.repository.AccountRepository;
-import ru.skillbox.service.AccountService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,14 +31,14 @@ import java.util.UUID;
 @AutoConfigureMockMvc
 @Transactional
 @Testcontainers
-public class AbstractTest {
+public abstract class AbstractTest {
 
     protected static PostgreSQLContainer postgreSQLContainer;
     static {
         DockerImageName postgres = DockerImageName.parse("postgres:12.3");
         postgreSQLContainer = (PostgreSQLContainer) new PostgreSQLContainer(postgres)
                 .withReuse(true);
-        postgreSQLContainer.start(); // стартанем контейнер с БД
+        postgreSQLContainer.start();
     }
 
     @DynamicPropertySource
@@ -49,9 +48,6 @@ public class AbstractTest {
         registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
         registry.add("spring.datasource.url", () -> jdbcUrl);
     }
-
-    @Autowired
-    protected AccountService accountService;
 
     @Autowired
     protected AccountRepository accountRepository;

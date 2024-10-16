@@ -1,7 +1,6 @@
 package ru.skillbox.dto.kafka;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 

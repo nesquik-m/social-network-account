@@ -1,12 +1,11 @@
 package ru.skillbox.mapper;
 
+import lombok.experimental.UtilityClass;
 import ru.skillbox.dto.AccountDto;
 import ru.skillbox.entity.Account;
 
+@UtilityClass
 public class AccountUpdateFactory {
-
-    private AccountUpdateFactory() {
-    }
 
     public static void updateFields(Account updatedAccount, AccountDto accountDto) {
 
