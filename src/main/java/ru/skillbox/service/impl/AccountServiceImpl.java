@@ -25,8 +25,8 @@ import ru.skillbox.repository.specification.AccountSpecification;
 import ru.skillbox.security.SecurityUtils;
 import ru.skillbox.service.AccountService;
 import ru.skillbox.mapper.AccountMapper;
+import ru.skillbox.utils.GlobalConstants;
 
-import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -63,7 +63,7 @@ public class AccountServiceImpl implements AccountService {
     public Account getAccountById(UUID accountId) {
         return accountRepository.findById(accountId)
                 .orElseThrow(() -> new AccountNotFoundException(
-                        MessageFormat.format("Account not found for ID: {0}", accountId)));
+                        String.format(GlobalConstants.ACCOUNT_NOT_FOUND_FORMAT, accountId)));
     }
 
     @Override
@@ -72,7 +72,7 @@ public class AccountServiceImpl implements AccountService {
     public Account createAccount(KafkaAuthEvent kafkaAuthEvent) {
         if (accountRepository.existsByEmail(kafkaAuthEvent.getEmail())) {
             throw new AlreadyExistsException(
-                    MessageFormat.format("An account with email {0} already exists!", kafkaAuthEvent.getEmail()));
+                    String.format("An account with email %s already exists!", kafkaAuthEvent.getEmail()));
         }
         return accountRepository.save(AccountMapper.kafkaAuthEventToAccount(kafkaAuthEvent));
     }
@@ -94,7 +94,7 @@ public class AccountServiceImpl implements AccountService {
         int updated = accountRepository.updateDeleted(accountId, true);
         if (updated == 0) {
             throw new AccountNotFoundException(
-                    MessageFormat.format("Account not found for ID: {0}", accountId));
+                    String.format(GlobalConstants.ACCOUNT_NOT_FOUND_FORMAT, accountId));
         }
         kafkaTemplate.send(topicName, accountId);
     }
@@ -105,7 +105,8 @@ public class AccountServiceImpl implements AccountService {
     public void manageAccountBlock(UUID accountId, boolean block) {
         int updated = accountRepository.updateBlocked(accountId, block);
         if (updated == 0) {
-            throw new AccountNotFoundException(MessageFormat.format("Account not found for ID: {0}", accountId));
+            throw new AccountNotFoundException(
+                    String.format(GlobalConstants.ACCOUNT_NOT_FOUND_FORMAT, accountId));
         }
     }
 

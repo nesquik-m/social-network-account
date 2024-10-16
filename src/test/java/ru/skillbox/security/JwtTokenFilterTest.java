@@ -1,10 +1,8 @@
 package ru.skillbox.security;
-import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
 
-import com.nimbusds.jwt.SignedJWT;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,7 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import ru.skillbox.client.OpenFeignClient;
 import ru.skillbox.client.ValidTokenResponse;
 
-public class JwtTokenFilterTest {
+class JwtTokenFilterTest {
 
     @Mock
     private OpenFeignClient openFeignClient;
