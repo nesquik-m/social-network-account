@@ -13,6 +13,11 @@ import java.util.UUID;
 
 public interface AccountSpecification {
 
+    String BIRTH_DATE = "birthDate";
+    String FIRST_NAME = "firstName";
+    String LAST_NAME = "lastName";
+
+
     static Specification<Account> withFilter(AccountSearchDto asd) {
         return Specification.where(byIds(asd.getIds()))
                 .and(byAuthor(asd.getAuthor()))
@@ -53,11 +58,11 @@ public interface AccountSpecification {
             if (parts.length == 2) {
                 return cb.or(
                         cb.and(
-                                cb.equal(root.get("firstName"), parts[0].trim().toUpperCase()),
-                                cb.equal(root.get("lastName"), parts[1].trim().toUpperCase())),
+                                cb.equal(root.get(FIRST_NAME), parts[0].trim().toUpperCase()),
+                                cb.equal(root.get(LAST_NAME), parts[1].trim().toUpperCase())),
                         cb.and(
-                                cb.equal(root.get("lastName"), parts[0].trim().toUpperCase()),
-                                cb.equal(root.get("firstName"), parts[1].trim().toUpperCase()))
+                                cb.equal(root.get(LAST_NAME), parts[0].trim().toUpperCase()),
+                                cb.equal(root.get(FIRST_NAME), parts[1].trim().toUpperCase()))
                 );
             }
 
@@ -72,8 +77,8 @@ public interface AccountSpecification {
             }
 
             Predicate predicateOr = cb.or(
-                    cb.like(root.get("firstName"), "%" + firstName.trim().toUpperCase() + "%"),
-                    cb.like(root.get("lastName"), "%" + firstName.trim().toUpperCase() + "%")
+                    cb.like(root.get(FIRST_NAME), "%" + firstName.trim().toUpperCase() + "%"),
+                    cb.like(root.get(LAST_NAME), "%" + firstName.trim().toUpperCase() + "%")
             );
 
             return firstName.split("\\s+").length == 1 ?
@@ -88,7 +93,7 @@ public interface AccountSpecification {
                 return null;
             }
 
-            return cb.like(root.get("lastName"), "%" + lastName.trim().toUpperCase() + "%");
+            return cb.like(root.get(LAST_NAME), "%" + lastName.trim().toUpperCase() + "%");
         };
     }
 
@@ -144,17 +149,17 @@ public interface AccountSpecification {
             LocalDate birthDateTo = ageTo != null ? currentDate.minusYears(ageTo) : null;
 
             if (birthDateFrom != null && birthDateTo != null) {
-                return cb.between(root.get("birthDate"),
+                return cb.between(root.get(BIRTH_DATE),
                         Timestamp.valueOf(birthDateTo.atStartOfDay()),
                         Timestamp.valueOf(birthDateFrom.atStartOfDay()));
             }
 
             if (birthDateFrom != null) {
-                return cb.lessThanOrEqualTo(root.get("birthDate"),
+                return cb.lessThanOrEqualTo(root.get(BIRTH_DATE),
                         Timestamp.valueOf(birthDateFrom.atStartOfDay()));
             }
 
-            return cb.greaterThanOrEqualTo(root.get("birthDate"),
+            return cb.greaterThanOrEqualTo(root.get(BIRTH_DATE),
                     Timestamp.valueOf(birthDateTo.atStartOfDay()));
         };
     }
