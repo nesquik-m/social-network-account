@@ -96,5 +96,9 @@ public class AccountController {
                                                   @PageableDefault(sort = "firstName", direction = Sort.Direction.ASC) Pageable page) {
         return accountService.getAccountsByTheirId(ids, page);
     }
-
+    @GetMapping("/searchs")
+    @LogAspect(type = LogType.CONTROLLER)
+    public List<AccountDto> searchAccountsByAuthor(@RequestParam String author) {
+        return accountService.searchAccountsByAuthor(author);
+    }
 }
