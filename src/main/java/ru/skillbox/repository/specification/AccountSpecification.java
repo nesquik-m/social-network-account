@@ -42,33 +42,67 @@ public interface AccountSpecification {
         };
     }
 
-    static Specification<Account> byAuthor(String author) {
-        return (root, query, cb) -> {
-            if (author == null || author.isEmpty()) {
-                return null;
-            }
-
-            String[] parts = author.split("\\s+");
-
-            if (parts.length == 1) {
-                return byFirstName(author.toUpperCase()).toPredicate(root, query, cb);
-            }
-
-
-            if (parts.length == 2) {
-                return cb.or(
-                        cb.and(
-                                cb.equal(root.get(FIRST_NAME), parts[0].trim().toUpperCase()),
-                                cb.equal(root.get(LAST_NAME), parts[1].trim().toUpperCase())),
-                        cb.and(
-                                cb.equal(root.get(LAST_NAME), parts[0].trim().toUpperCase()),
-                                cb.equal(root.get(FIRST_NAME), parts[1].trim().toUpperCase()))
-                );
-            }
-
+//    static Specification<Account> byAuthor(String author) {
+//        return (root, query, cb) -> {
+//            if (author == null || author.isEmpty()) {
+//                return null;
+//            }
+//
+//            String[] parts = author.split("\\s+");
+//
+//            if (parts.length == 1) {
+//                return byFirstName(author.toUpperCase()).toPredicate(root, query, cb);
+//            }
+//
+//
+//            if (parts.length == 2) {
+//                return cb.or(
+//                        cb.and(
+//                                cb.equal(root.get(FIRST_NAME), parts[0].trim().toUpperCase()),
+//                                cb.equal(root.get(LAST_NAME), parts[1].trim().toUpperCase())),
+//                        cb.and(
+//                                cb.equal(root.get(LAST_NAME), parts[0].trim().toUpperCase()),
+//                                cb.equal(root.get(FIRST_NAME), parts[1].trim().toUpperCase()))
+//                );
+//            }
+//
+//            return null;
+//        };
+//    }
+static Specification<Account> byAuthor(String author) {
+    return (root, query, cb) -> {
+        if (author == null || author.isEmpty()) {
             return null;
-        };
-    }
+        }
+
+        String[] parts = author.trim().toUpperCase().split("\\s+");
+
+        // Одинарное слово, ищем и по имени, и по фамилии
+        if (parts.length == 1) {
+            return cb.or(
+                    cb.like(cb.upper(root.get(FIRST_NAME)), "%" + parts[0] + "%"),
+                    cb.like(cb.upper(root.get(LAST_NAME)), "%" + parts[0] + "%")
+            );
+        }
+
+        // Два слова, проверяем оба варианта: имя + фамилия и фамилия + имя
+        if (parts.length == 2) {
+            return cb.or(
+                    cb.and(
+                            cb.like(cb.upper(root.get(FIRST_NAME)), "%" + parts[0] + "%"),
+                            cb.like(cb.upper(root.get(LAST_NAME)), "%" + parts[1] + "%")
+                    ),
+                    cb.and(
+                            cb.like(cb.upper(root.get(LAST_NAME)), "%" + parts[0] + "%"),
+                            cb.like(cb.upper(root.get(FIRST_NAME)), "%" + parts[1] + "%")
+                    )
+            );
+        }
+
+        return null;
+    };
+}
+
 
     static Specification<Account> byFirstName(String firstName) {
         return (root, query, cb) -> {
