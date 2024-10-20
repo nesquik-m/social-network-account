@@ -7,7 +7,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import ru.skillbox.annotation.LogAspect;
 import ru.skillbox.aop.LogType;
-import ru.skillbox.dto.AccountByFilterDto;
 import ru.skillbox.dto.AccountDto;
 import ru.skillbox.dto.AccountSearchDto;
 import ru.skillbox.service.AccountService;
@@ -68,13 +67,6 @@ public class AccountController {
     @LogAspect(type = LogType.CONTROLLER)
     public AccountDto getAccountById(@PathVariable("id") UUID accountId) {
         return accountService.getAccountDtoById(accountId);
-    }
-
-    @PostMapping("/searchByFilter")
-    @LogAspect(type = LogType.CONTROLLER)
-    public PageImpl<AccountDto> searchAccountByFilter(@RequestBody AccountByFilterDto filterDto) {
-        return accountService.filterBy(filterDto.getAccountSearchDto(),
-                PageRequest.of(filterDto.getPageNumber(), filterDto.getPageSize()));
     }
 
     @GetMapping("/search")
