@@ -80,7 +80,7 @@ public class AccountController {
     @GetMapping("/search")
     @LogAspect(type = LogType.CONTROLLER)
     public PageImpl<AccountDto> searchAccount(@ModelAttribute AccountSearchDto dto,
-                                              @PageableDefault(sort = "firstName", direction = Sort.Direction.ASC, size = 30) Pageable page) {
+                                              @PageableDefault(sort = "firstName", direction = Sort.Direction.ASC, size = 100) Pageable page) {
         return accountService.searchAccount(dto, page);
     }
 
