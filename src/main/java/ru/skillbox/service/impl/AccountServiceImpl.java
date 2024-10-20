@@ -156,4 +156,11 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
+    @Override
+    @LogAspect(type = LogType.SERVICE)
+    public List<AccountDto> searchAccountsByAuthor(String author) {
+        List<Account> accounts = accountRepository.findAll(AccountSpecification.byAuthor(author));
+        return AccountMapper.accountListToAccountDtoList(accounts);
+    }
+
 }

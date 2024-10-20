@@ -35,5 +35,6 @@ public interface AccountService {
     PageImpl<AccountDto> filterBy(AccountSearchDto accountSearchDto, Pageable page);
 
     PageImpl<AccountDto> searchAccount (AccountSearchDto accountSearchDto, Pageable page);
+    List<AccountDto> searchAccountsByAuthor(String author);
 
 }

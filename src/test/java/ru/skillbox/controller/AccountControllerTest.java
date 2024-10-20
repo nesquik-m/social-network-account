@@ -423,7 +423,6 @@ class AccountControllerTest extends AbstractTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-        // как тут протестировать, что результаты соответствуют ожидаемым?
     }
 
     @Test
@@ -433,7 +432,6 @@ class AccountControllerTest extends AbstractTest {
 
         mockMvc.perform(get("/api/v1/account/search")
                         .contentType(MediaType.APPLICATION_JSON)
-//                        .param("author", "Test1 User1")
                         .param("firstName", "Test1 User1")
                         .param("page", "0")
                         .param("size", "10")
@@ -441,7 +439,6 @@ class AccountControllerTest extends AbstractTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-        // как тут протестировать, что результаты соответствуют ожидаемым?
     }
 
     @Test
@@ -458,7 +455,6 @@ class AccountControllerTest extends AbstractTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-        // как тут протестировать, что результаты соответствуют ожидаемым?
     }
 
     @Test
@@ -478,7 +474,6 @@ class AccountControllerTest extends AbstractTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-        // как тут протестировать, что результаты соответствуют ожидаемым?
     }
 
     @Test
@@ -541,6 +536,43 @@ class AccountControllerTest extends AbstractTest {
                         .param("sort", "firstName,asc"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.status").value(HttpServletResponse.SC_UNAUTHORIZED))
+                .andExpect(jsonPath("$.error").value("Unauthorized"))
+                .andExpect(jsonPath("$.message").exists());
+    }
+
+    @Test
+    @DisplayName("SearchAccountsByAuthor, should return 200 with correct author")
+    @WithMockUser(username = UUID_200_1)
+    void testSearchAccountsByAuthor_shouldReturnOk() throws Exception {
+        mockMvc.perform(get("/api/v1/account/searchs?author=Name1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].firstName").value("Name1"))
+                .andExpect(jsonPath("$[0].lastName").value("Surname1"))
+                .andExpect(jsonPath("$[0].email").value("test1@example.com"));
+    }
+
+    @Test
+    @DisplayName("SearchAccountsByAuthor, should return 200 with no results for non-existing author")
+    @WithMockUser(username = UUID_200_1)
+    void testSearchAccountsByAuthor_shouldReturnEmpty() throws Exception {
+        mockMvc.perform(get("/api/v1/account/searchs")
+                        .param("author", "NonExistingName")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    @Test
+    @DisplayName("SearchAccountsByAuthor, should return 401 when unauthorized")
+    void testSearchAccountsByAuthor_shouldReturnUnauthorized() throws Exception {
+        mockMvc.perform(get("/api/v1/account/searchs")
+                        .param("author", "Name1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.status").value(HttpServletResponse.SC_UNAUTHORIZED))
                 .andExpect(jsonPath("$.error").value("Unauthorized"))
                 .andExpect(jsonPath("$.message").exists());

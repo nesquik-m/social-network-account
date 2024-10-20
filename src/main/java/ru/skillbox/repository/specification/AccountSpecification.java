@@ -22,7 +22,6 @@ public interface AccountSpecification {
         return Specification.where(byIds(asd.getIds()))
                 .and(byAuthor(asd.getAuthor()))
                 .and(byFirstName(asd.getFirstName()))
-                .and(byLastName(asd.getLastName()))
                 .and(byCity(asd.getCity()))
                 .and(byCountry(asd.getCountry()))
                 .and(byBlocked(asd.isBlocked()))
@@ -42,33 +41,6 @@ public interface AccountSpecification {
         };
     }
 
-//    static Specification<Account> byAuthor(String author) {
-//        return (root, query, cb) -> {
-//            if (author == null || author.isEmpty()) {
-//                return null;
-//            }
-//
-//            String[] parts = author.split("\\s+");
-//
-//            if (parts.length == 1) {
-//                return byFirstName(author.toUpperCase()).toPredicate(root, query, cb);
-//            }
-//
-//
-//            if (parts.length == 2) {
-//                return cb.or(
-//                        cb.and(
-//                                cb.equal(root.get(FIRST_NAME), parts[0].trim().toUpperCase()),
-//                                cb.equal(root.get(LAST_NAME), parts[1].trim().toUpperCase())),
-//                        cb.and(
-//                                cb.equal(root.get(LAST_NAME), parts[0].trim().toUpperCase()),
-//                                cb.equal(root.get(FIRST_NAME), parts[1].trim().toUpperCase()))
-//                );
-//            }
-//
-//            return null;
-//        };
-//    }
 static Specification<Account> byAuthor(String author) {
     return (root, query, cb) -> {
         if (author == null || author.isEmpty()) {
@@ -77,7 +49,6 @@ static Specification<Account> byAuthor(String author) {
 
         String[] parts = author.trim().toUpperCase().split("\\s+");
 
-        // Одинарное слово, ищем и по имени, и по фамилии
         if (parts.length == 1) {
             return cb.or(
                     cb.like(cb.upper(root.get(FIRST_NAME)), "%" + parts[0] + "%"),
@@ -85,7 +56,6 @@ static Specification<Account> byAuthor(String author) {
             );
         }
 
-        // Два слова, проверяем оба варианта: имя + фамилия и фамилия + имя
         if (parts.length == 2) {
             return cb.or(
                     cb.and(
@@ -103,7 +73,6 @@ static Specification<Account> byAuthor(String author) {
     };
 }
 
-
     static Specification<Account> byFirstName(String firstName) {
         return (root, query, cb) -> {
             if (firstName == null || firstName.isEmpty()) {
@@ -118,16 +87,6 @@ static Specification<Account> byAuthor(String author) {
             return firstName.split("\\s+").length == 1 ?
                     predicateOr :
                     byAuthor(firstName.toUpperCase()).toPredicate(root, query, cb);
-        };
-    }
-
-    static Specification<Account> byLastName(String lastName) {
-        return (root, query, cb) -> {
-            if (lastName == null || lastName.isEmpty()) {
-                return null;
-            }
-
-            return cb.like(root.get(LAST_NAME), "%" + lastName.trim().toUpperCase() + "%");
         };
     }
 
