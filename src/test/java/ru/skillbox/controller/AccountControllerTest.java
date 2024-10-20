@@ -545,10 +545,13 @@ class AccountControllerTest extends AbstractTest {
     @DisplayName("SearchAccountsByAuthor, should return 200 with correct author")
     @WithMockUser(username = UUID_200_1)
     void testSearchAccountsByAuthor_shouldReturnOk() throws Exception {
-        mockMvc.perform(get("/api/v1/account/searchs?author=Name1"))
+        mockMvc.perform(get("/api/v1/account/searchs")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("author", "Name1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].id").value("1" + UUID_200))
                 .andExpect(jsonPath("$[0].firstName").value("Name1"))
                 .andExpect(jsonPath("$[0].lastName").value("Surname1"))
                 .andExpect(jsonPath("$[0].email").value("test1@example.com"));
